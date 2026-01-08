@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - Desktop First</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- BASE STYLES (DESKTOP) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* ป้องกันการเลื่อนจอ */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* แบ่ง 2 ฝั่งสำหรับ Desktop */
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* ฝั่งรูปภาพ */
+        .cover {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ฝั่งฟอร์ม Login */
+        .card-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background-color: #fff;
+        }
+
+        .middle {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login {
+            background-color: white;
+            border-radius: 24px;
+            padding: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .login b {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+
+        .input-field {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-field p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            height: 52px;
+            padding: 0 18px;
+            font-size: 16px;
+            border: 1.5px solid #eee;
+            border-radius: 12px;
+            outline: none;
+            background-color: #f9f9f9;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            border-color: #3b80ff;
+            background-color: #fff;
+        }
+
+        button.login-button {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #3b80ff;
+            width: 100%;
+            height: 55px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .dont-have-account {
+            padding: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .dont-have-account a {
+            color: #3b80ff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* --- MOBILE OVERRIDES (MAX-WIDTH: 480PX) --- */
+        @media (max-width: 480px) {
+            body, html {
+                position: fixed; /* ล็อกจอสำหรับมือถือ */
+            }
+
+            .container {
+                grid-template-columns: 1fr; /* เหลือคอลัมน์เดียว */
+            }
+
+            /* ปรับรูปให้กลายเป็นพื้นหลัง */
+            .cover {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            .cover img {
+                filter: brightness(0.6); /* ทำให้รูปมืดลงเพื่อให้ฟอร์มเด่น */
+            }
+
+            /* ปรับฟอร์มให้อยู่กึ่งกลางหน้าจอที่มีพื้นหลังเป็นรูป */
+            .card-login {
+                background-color: transparent;
+                padding: 20px;
+            }
+
+            .middle {
+                max-width: 100%;
+                gap: 15px;
+            }
+
+            .login {
+                background-color: rgba(255, 255, 255, 0.98);
+                padding: 30px;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            }
+
+            .login b {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .dont-have-account {
+                background-color: rgba(255, 255, 255, 0.98);
+                border-radius: 20px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cover">
+            <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1000" alt="cover">
+        </div>
+
+        <div class="card-login">
+            <div class="middle">
+                <div class="login">
+                    <b>LOGIN</b>
+                    <div class="input-field">
+                        <p>Username</p>
+                        <input type="text" id="username" placeholder="Username">
+                    </div>
+                    <div class="input-field">
+                        <p>Password</p>
+                        <input type="password" id="password" placeholder="Password">
+                    </div>
+                    <button type="button" class="login-button">Login</button>
+                </div>
+
+                <div class="dont-have-account">
+                    <p>Don't have an account? <a href="register.html">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

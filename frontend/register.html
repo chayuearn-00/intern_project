@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter';
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* ป้องกันการเลื่อนจอ */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        .half-left {
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .half-left img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+      }
+
+        .half-right {
+            display: flex;
+            align-items: center;   
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+            max-width: 550px;
+            justify-content: center;
+            place-items: center;
+        }
+
+        .login-card {
+            padding: 64px;
+            border: 1px solid black;
+            border-radius: 24px;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 1);
+            width: 100%;
+            box-sizing: border-box;
+            background-color: white;
+        }
+
+        .login-card b {
+            display: block;
+            font-size: 64px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .input p {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 90%;
+            font-size: 18px;
+            padding: 20px;
+            margin-bottom: 26px;
+            border-radius: 12px;
+            border: 1.5px solid rgb(50,50,50);
+            outline: none;
+            background-color: #f9f9f9;
+        }
+
+        input:focus {
+            border-color: #3b80ff;
+            background-color: white;
+        }
+
+        button {
+            background-color: royalblue;
+            color: #fff;
+            font-size: 24px;
+            border-radius: 24px;
+            outline: none;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .sign-up {
+            font-size: 18px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            padding: 16px;
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 24px;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 1);
+        }
+
+        .sign-up a {
+            text-decoration: underline;
+        }
+
+        a:link{
+            color: black;
+        }
+
+        a:visited {
+            color: black;
+        }
+
+        a:hover {
+            color: red;
+        }
+
+        
+        @media (max-width: 1080px ) {
+            body, html {
+            position: fixed; /* ล็อกจอสำหรับมือถือ */
+            }
+
+            .container {
+            grid-template-columns: 1fr;
+            }
+
+            .half-left {
+            position: absolute;
+            top: 0;
+                left: 0;
+                z-index: -1;
+            }
+
+            .half-left img {
+                filter: brightness(0.6);
+            }
+
+            /* ปรับฟอร์มให้อยู่กึ่งกลางหน้าจอที่มีพื้นหลังเป็นรูป */
+            .half-right {
+                background-color: transparent;
+            }
+            
+            .card {
+                max-width: 550px;
+                gap: 40px;
+            }
+
+            .login-card {
+                padding: 60px;
+                box-sizing: border-box;
+            }
+
+            .login-card b {
+                margin: 30px;
+            }
+
+            .input p {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+
+            input {
+                font-size: 20px;
+                width: 90%;
+            }
+        
+            .sign-up {
+                background-color: rgba(255, 255, 255, 0.98);
+                border-radius: 20px;
+                padding: 20px;
+                width: 550px;
+            }
+        }
+        @media (max-width: 480px) {
+            body, html {
+            position: fixed; /* ล็อกจอสำหรับมือถือ */
+            }
+
+            .container {
+            grid-template-columns: 1fr;
+            }
+
+            .half-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            }
+
+            .half-left img {
+            filter: brightness(0.6);
+            }
+
+            /* ปรับฟอร์มให้อยู่กึ่งกลางหน้าจอที่มีพื้นหลังเป็นรูป */
+            .half-right {
+            background-color: transparent;
+            padding: 10px;
+            }
+            
+            .card {
+            max-width: 300px;
+            gap: 20px;
+            }
+
+            .login-card {
+            padding: 20px;
+            }
+
+            .login-card b {
+            font-size: 36px;
+            margin: 15px;
+            }
+
+            .input p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            }
+
+            input {
+                font-size: 16px;
+                width: 80%;
+            }
+        
+            .sign-up {
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 15px;
+            width: 100%;
+            }
+            
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="half-left">
+            <img src="cover.png" alt="cover">
+        </div>
+        <div class="half-right">
+            <div class="card">
+                <div class="login-card">
+                    <p><b>LOGIN</b></p>
+                    <div class="input">
+                        <p>Username</p>
+                        <input type="text" id="username" placeholder="example123">
+                    </div>
+                    <div class="input">
+                        <p>Password</p>
+                        <input type="password" id="password" placeholder="1234567890">
+                    </div>
+                    <button type="submit">login</button>
+                </div>
+                <div class="sign-up">
+                    <p>Don't have an account? <a href="login.html">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
