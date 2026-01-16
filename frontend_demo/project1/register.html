@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="cover">
+            <img src="src/cover.png">
+        </div>
+        <div class="main-card">
+            <p class="register">REGISTER</p>
+            <div class="data">
+                <div class="left-data">
+                    <div class="input-data">
+                        <p>Username</p>
+                        <input id="Username" type="text" placeholder="exxample123">
+                    </div>
+                    <div class="input-data">
+                        <p>First Name</p>
+                        <input id="FirstName" type="text" placeholder="Firstname">
+                    </div>
+                    <div class="input-data">
+                        <p>Email</p>
+                        <input id="Email" type="email" placeholder="example123@email.com">
+                    </div>
+                
+                </div>
+                <div class="right-data">
+                    <div class="input-data">
+                        <p>Password</p>
+                        <input id="Password" type="password" placeholder="12345678">
+                    </div>
+                    <div class="input-data">
+                        <p>Last Name</p>
+                        <input id="LastName" type="text" placeholder="Lastname">
+                    </div>
+                    <div class="input-data">
+                        <p>Tel.</p>
+                        <input id="Tel" type="tel" placeholder="66+">
+                    </div>
+                </div>
+                <div class="button">
+                    <button id="Submit" class="submit">submit</button>
+                    <button id="Cancel" class="cancel">cancel</button>
+                </div>                
+            </div>
+            <div class="have-account">
+                <p>You already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    * {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+        width: 100vh;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr;
+        place-content: center;  
+        place-items: center;
+    }
+
+    .cover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .cover img {
+        filter: brightness(0.6);
+    }
+
+    .main-card {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        max-width: 600px;
+        padding: 24px;
+        border: 1px black;
+        background-color: #fff;
+    }
+
+    .register {
+        font-size: 46px;
+    }
+
+    .data {
+        display: flex;
+        flex-flow: row;
+        margin: 18px;
+    }
+
+    .input-data {
+        font-size: 24px;
+        margin: 12px;
+        max-width: 600px;
+    }
+
+     .input-data input {
+        width: 500px;
+        font-size: 20px;
+        padding: 5px;
+        margin: 5px;
+        box-sizing: border-box;
+        border-color: rgb(192, 199, 206);
+        border-radius: 12px;
+     }
+
+    
+</style>
+</html>
