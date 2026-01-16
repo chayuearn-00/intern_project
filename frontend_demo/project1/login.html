@@ -40,18 +40,45 @@
 
       /* ฝั่งฟอร์ม Login */
       .card-login{
-        display: flex;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        height: 100%;
         justify-content: center;
-        padding: 40px;
+        place-items: center;
+        align-content: center;
         background-color: #fff;
+      }
+
+      .card-login div {
+        justify-content: center;
+        align-content: center;
+      }
+      
+      .notice {
+        position: fixed;          /* สำคัญ */
+        top: 8%;
+        font-size: 18px;
+        background: #fd3535;
+        color: white;
+        padding: 16px;
+        border-radius: 10px;
+        opacity: 0;
+        z-index: 11;
+      }
+
+      .notice-show {
+        opacity: 1;
+        transform: translateY(0);
       }
 
       .middle {
         display: flex;
         flex-direction: column;
+        justify-items: center;
         gap: 48px; 
         width: 100%;
+        height: 100%;
         max-width: 550px;
       }
 
@@ -83,6 +110,16 @@
         font-weight: 600;
       }
 
+      .hide_password {
+        text-align: right;
+        font-size: 1rem;
+        text-decoration: underline;
+        border: none;
+        background-color: #f9f9f9;
+        margin-top: 4px;
+        cursor: pointer;
+      }
+
       input {
         font-size: 18px;
         width: 100%;
@@ -94,6 +131,23 @@
         background-color: #f9f9f9;
         outline: none;
         transition: all 0.2s;
+      }
+
+      .input-new {
+        font-size: 18px;
+        width: 100%;
+        height: 54px;
+        padding-left: 24px;
+        margin-top: 11px;
+        border: 1px solid rgb(255, 8, 8);
+        border-radius: 12px;
+        background-color: #f9f9f9;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .input-error {
+        border-color: rgb(239 68 68); /* red-500 */
       }
 
       input:focus {
@@ -144,6 +198,7 @@
 
         .container {
           grid-template-columns: 1fr;
+          place-items: center;
         }
 
         .cover {
@@ -160,7 +215,8 @@
         /* ปรับฟอร์มให้อยู่กึ่งกลางหน้าจอที่มีพื้นหลังเป็นรูป */
         .card-login {
           background-color: transparent;
-          padding: 120px;
+          width: 100vh;
+          padding: 50px;
         }
         
         .middle {
@@ -168,9 +224,20 @@
           gap: 20px;
         }
 
+        .card-login {
+          max-width: 850px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
         .login b {
           font-size: 56px;
           margin-bottom: 32px;
+        }
+
+        .notice{
+          top: 4%;
+          font-size: 18px;
         }
       
         .dont-have-account {
@@ -212,8 +279,13 @@
         }
 
         .login b {
-          font-size: 48px;
+          font-size: 40px;
           margin-bottom: 20px;
+        }
+
+        .notice{
+          top: 8%;
+          font-size: 12px;
         }
       
         .dont-have-account {
@@ -223,36 +295,84 @@
         }
           
       }
-      </style>
+    </style>
   </head>
 <body>
-    <div class="container">
-        <div class="cover">
-            <img src="src/cover.png"  alt="cover" >
-        </div>
-        <div class="test"></div>
-        <div class="card-login">
-          <div class="middle">
-            <div class="login">
-              <p><b>LOGIN</b></p>
-              <div class="input-field">
-                <p>Username</p>
-                <div class="input">
-                  <input type="text" id="username"  placeholder="Username">
-                </div>
-              </div>
-              <div class="input-field">
-                <p>Password</p>
-                <input type="password" id="password" placeholder="Password">
-              </div>
-              <button type="submit" class="login-button">Login</button>
-            </div>
-
-            <div class="dont-have-account">
-              <p>Don't have an account? <a class="sign-in" href="register.html" target="_blank">Sign up</a></p>
+  <div class="container">
+    <div class="cover">
+        <img src="src/cover.png"  alt="cover" >
+    </div>
+    <div class="card-login">
+      <span id="notice" class="notice">Please fill your username and password.</span>
+      <div class="middle">
+        <div class="login">
+          <p><b>LOGIN</b></p>
+          <div class="input-field">
+            <p>Username</p>
+            <div class="input">
+              <input type="text" id="username" placeholder="Username">
             </div>
           </div>
+          <div class="input-field">
+            <p>Password</p>
+            <input type="password" id="password" placeholder="Password">
+            <p id=hide_password class="hide_password">hide</p>
+          </div>
+          <button type="submit" id="login_button" class="login-button">Login</button>
         </div>
+        <div class="dont-have-account">
+          <p>Don't have an account? <a class="sign-in" href="register.html" target="_blank">Sign up</a></p>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <script>
+document.getElementById('hide_password').addEventListener('click', function() {
+  const password = document.getElementById('password');
+  if (password.type === 'password') {
+    password.type = 'text';
+    this.textContent = 'show';
+  } else {
+    password.type = 'password';
+    this.textContent = 'hide';
+  }
+});
+
+document.getElementById('login_button').addEventListener('click', async function(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const notice = document.getElementById('notice');
+
+  // simple client-side validation (keeps your current visuals)
+  if (!username || !password) {
+    if (!username) document.getElementById('username').classList.add('input-error');
+    else document.getElementById('username').classList.remove('input-error');
+    if (!password) document.getElementById('password').classList.add('input-error');
+    else document.getElementById('password').classList.remove('input-error');
+    notice.classList.add('notice-show');
+    return;
+  }
+  notice.classList.remove('notice-show');
+
+  const payload = { username, password };
+  console.log('payload', payload);
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    console.log('data', data);
+    // handle success / error here
+  } catch (err) {
+    console.error('Network error', err);
+    // show user-friendly error
+  }
+});
+  </script>
 </body>
 </html>
