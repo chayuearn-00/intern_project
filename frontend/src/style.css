@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+/* ประกาศตัวแปรไว้ใน theme เพื่อให้ Tailwind สร้าง class ให้โดยอัตโนมัติ */
+@theme {
+  --color-background: oklch(0.9705 0.0142 254.6);
+  --color-foreground: oklch(0.145 0 0);
+  --color-primary: oklch(0.5506 0.248713 261.6733);
+  --color-input: oklch(0.7107 0.0351 256.79);
+  --color-border: oklch(0.9007 0.0203 257.47);
+  --color-ring: oklch(0.704 0.04 256.788);
+}
+
+/* ใช้สำหรับ HTML tag เช่น h1, h2 เป็นต้น */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply text-foreground bg-background;
+  }
+}
+
+@layer utilities {
+  .container {
+    @apply mx-auto max-w-screen-2xl;
+  }
+  .card-login {
+    @apply grid grid-cols-2 gap-18 p-10 rounded-4xl;
+  }
+  .form-login {
+    @apply flex flex-col gap-6;
+  }
+  .input-login {
+    @apply text-sm placeholder:text-input border-border bg-white rounded-lg focus:border-primary focus:ring-2 focus:ring-ring;
+  }
+}
