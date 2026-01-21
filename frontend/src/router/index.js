@@ -8,6 +8,10 @@ const routes = [
     meta: { title: "Login" },
   },
   {
+    path: "/",
+    redirect: "/Login",
+  },
+  {
     path: "/Register",
     name: "register",
     component: () => import("../views/RegisterForm.vue"),
