@@ -10,15 +10,15 @@
                     </h1>
                     <p class="text-xs md:text-sm font-regular">Sign up to start</p>
                 </div>    
-                <InputBox v-model="form.firstName" topic="First Name" :error="errors.firstName" class="sm:col-span-1"/>
-                <InputBox v-model="form.lastName" topic="Last Name" :error="errors.lastName" class="sm:col-span-1"/>
-                <InputBox v-model="form.username" topic="Username" :error="errors.username" />
-                <InputBox v-model="form.email" topic="Email" :error="errors.email" :error_authen="errorAuthen" type="email" :error_email_form="errorEmailForm" />
+                <RegisterInputBox v-model="form.firstName" topic="First Name" :error="errors.firstName" class="sm:col-span-1"/>
+                <RegisterInputBox v-model="form.lastName" topic="Last Name" :error="errors.lastName" class="sm:col-span-1"/>
+                <RegisterInputBox v-model="form.username" topic="Username" :error="errors.username" />
+                <RegisterInputBox v-model="form.email" topic="Email" :error="errors.email" :error_authen="errorAuthen" type="email" :error_email_form="errorEmailForm" />
                 <div class="col-span-2">
-                    <InputBox v-model="form.password" topic="Password" type="password" :error="errors.password" :passwordWarning="showPasswordWarning" />
+                    <RegisterInputBox v-model="form.password" topic="Password" type="password" :error="errors.password" :passwordWarning="showPasswordWarning" />
                     <CheckPassword ref="checkPasswordComponent" :password="form.password" class="password-check" />
                 </div>
-                <InputBox v-model="form.company" topic="Company" :error="errors.company" />
+                <RegisterInputBox v-model="form.company" topic="Company" :error="errors.company" />
                 <!-- <button :disabled="!isFormValid" class="button-login col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">submit</button> -->
                 <button class="button-login col-span-2">submit</button>
             </form>
@@ -42,7 +42,7 @@
 
 <script setup>
 import { reactive , ref, inject, watch} from 'vue'
-import InputBox from '../components/RegisterInput.vue'
+import RegisterInputBox from '../components/RegisterInput.vue'
 import googleImage from '../assets/icons/google-logo.png'
 import { useRouter } from 'vue-router'
 import BaseAlert from '../components/BaseAlert.vue'
@@ -57,7 +57,6 @@ const success = ref(false);
 const checkPasswordComponent = ref(null);
 const showPasswordWarning = ref(false);
 const errorEmailForm = ref(false);
-
 
 const form = reactive({
     firstName: '',
@@ -113,7 +112,6 @@ watch(() => form.email, (newEmail) => {
 watch(() => form.password, () => { 
     if (checkPasswordComponent.value) {
         showPasswordWarning.value = checkPasswordComponent.value.shouldShowErrors
-        console.log("show password", showPasswordWarning.value)
     }
 })
 
@@ -143,8 +141,6 @@ const handleSubmit = async () => {
       passwordRules.number.test(form.password) &&
       passwordRules.special.test(form.password)
     )
-
-    // console.log('password error', passwordHasErrors)
 
     // const handleAsync = async (promise) => {
     // try {
