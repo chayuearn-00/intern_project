@@ -15,8 +15,19 @@
                 <RegisterInputBox v-model="form.username" topic="Username" :error="errors.username" />
                 <RegisterInputBox v-model="form.email" topic="Email" :error="errors.email" :error_authen="errorAuthen" type="email" :error_email_form="errorEmailForm" />
                 <div class="col-span-2">
-                    <RegisterInputBox v-model="form.password" topic="Password" type="password" :error="errors.password" :passwordWarning="showPasswordWarning" />
-                    <CheckPassword ref="checkPasswordComponent" :password="form.password" class="password-check" />
+                    <RegisterInputBox 
+                        v-model="form.password" 
+                        topic="Password" 
+                        type="password" 
+                        :error="errors.password" 
+                        :passwordWarning="showPasswordWarning" 
+                    />
+                    <CheckPassword 
+                        ref="checkPasswordComponent" 
+                        :password="form.password" 
+                        class="password-check" 
+                        @validation="val => showPasswordWarning = val"
+                    />
                 </div>
                 <RegisterInputBox v-model="form.company" topic="Company" :error="errors.company" />
                 <!-- <button :disabled="!isFormValid" class="button-login col-span-2 disabled:opacity-50 disabled:cursor-not-allowed">submit</button> -->
@@ -111,7 +122,7 @@ watch(() => form.email, (newEmail) => {
 // Watch for password changes and update warning style
 watch(() => form.password, () => { 
     if (checkPasswordComponent.value) {
-        showPasswordWarning.value = checkPasswordComponent.value.shouldShowErrors
+        showPasswordWarning.value = checkPasswordComponent.value.shouldShowErrors.value
     }
 })
 
