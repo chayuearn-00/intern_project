@@ -14,8 +14,14 @@ const routes = [
   {
     path: "/Register",
     name: "register",
-    component: () => import("../views/RegisterForm.vue"),
+    component: () => import("../views/RegisterPage.vue"),
     meta: { title: "Register" },
+  },
+  {
+    path: "/Homepage",
+    name: "HomePage",
+    component: () => import("../views/HomePage.vue"),
+    meta: { title: "HomePage" },
   },
 ]
 

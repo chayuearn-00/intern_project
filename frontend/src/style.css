@@ -8,6 +8,10 @@
   --color-input: oklch(0.7107 0.0351 256.79);
   --color-border: oklch(0.9007 0.0203 257.47);
   --color-ring: oklch(0.704 0.04 256.788);
+  --color-secondary: oklch(0.2792 0.0748 261.88);
+  --text-xxs: 9px;
+  --width-card-size: 688px;
+  --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
 /* ใช้สำหรับ HTML tag เช่น h1, h2 เป็นต้น */
@@ -22,15 +26,68 @@
 
 @layer utilities {
   .container {
-    @apply mx-auto max-w-screen-2xl;
+    @apply bg-background m-0 max-w-full overflow-hidden min-h-screen;
   }
   .card-login {
-    @apply grid grid-cols-2 gap-18 p-10 rounded-4xl;
+    @apply grid grid-cols-2 gap-4 p-10 rounded-4xl;
   }
   .form-login {
     @apply flex flex-col gap-6;
   }
+  .input-box{
+    @apply grid grid-rows-2 md:w-full px-5 gap-3;
+  }
   .input-login {
-    @apply text-sm placeholder:text-input border-border bg-white rounded-lg focus:border-primary focus:ring-2 focus:ring-ring;
+    @apply text-sm placeholder:text-sm bg-white rounded-lg focus:border-primary focus:ring-2 focus:ring-ring;
+  }
+  .button-login {
+    @apply bg-primary py-3 my-2 text-white font-medium rounded-lg hover:bg-primary/90 cursor-pointer;
+  }
+
+  .card-register {
+    @apply p-7 md:p-10 rounded-3xl md:rounded-4xl bg-white max-w-[85%] w-full md:max-w-[688px] shadow-lg place-self-center;
+  }
+  .form-register {
+    @apply grid grid-cols-2 gap-y-5 md:gap-y-7 md:px-6 text-center;
+  }
+  .input-register {
+    @apply flex flex-col px-2 md:px-5 gap-3 text-left col-span-2
+  }
+  .input-box-register {
+    @apply w-full border text-xs p-2 md:text-sm md:p-4 bg-white rounded-lg focus:border-primary ;
+  }
+  .input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+  }
+  .password-check {
+    @apply text-left text-xxs md:px-2 md:text-xs text-red-500
+  }
+
+  .error-text {
+    @apply text-xxs m-1 md:text-xs text-red-500 md:m-1.5;
+  }  
+  .signin-google {
+    @apply w-full border flex items-center justify-center py-3 text-foreground text-xs md:text-base font-medium rounded-lg gap-1 sm:gap-2 hover:bg-primary/90
+  }
+
+  .navbar {
+    @apply sticky top-0 z-100 max-w-full bg-white p-6 gap-x-52;
+  }
+  .navbar-card {
+    @apply flex px-80 w-full justify-between items-center;
+  }
+  .navbar-item {
+    @apply  text-xl hover:text-primary focus:ring-2 focus:ring-ring;
+  }
+  .hiden-item {
+    @apply hidden lg:flex self-center place-content-center;
+  }
+
+
+  .base-alert {
+    @apply fixed z-50 top-6 self-center md:top-8 md:right-10 md:left-auto md:w-[360px] rounded-xl px-4 py-3 shadow-lg flex gap-5 items-start place-content-center;
+  }
+  .werning-alert {
+    @apply bg-yellow-100 text-yellow-800
   }
 }

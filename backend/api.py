@@ -7,6 +7,8 @@ from db_pg import get_pg_connection
 from fastapi import HTTPException, Depends
 from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
 
+# python -m uvicorn api:app --reload
+
 app = FastAPI()
 
 origins = [
@@ -18,7 +20,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -156,6 +158,10 @@ def register_user(data: UserCreate):
     
     # username = rows[0]
     if rows is not None:
+        # return {
+        #     "message": "Email already registered",
+        #     "status_code": "400"
+        # }
         raise HTTPException(
         status_code=400,
         detail="Email already registered"
@@ -180,7 +186,8 @@ def register_user(data: UserCreate):
     conn.commit()
 
     return {
-        "message": "Register success"
+        "message": "Register success",
+        "status_code": "200"
     }
     
 @app.post("/refresh")
