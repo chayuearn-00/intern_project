@@ -88,4 +88,11 @@ defineExpose({
   shouldShowErrors,
   isPasswordValid,
 })
+
+// push state to event(emit) from child -> parent
+const emit = defineEmits(['validation']);
+
+watch(shouldShowErrors, (newVal) => {
+  emit('validation', newVal)
+})
 </script>
