@@ -1,51 +1,81 @@
 <template>
+    <BaseAlert v-if="Invalide_backend" type="error" title="Invalide" message="Invalid email or password" />
     <div>
       <h2 class="whitespace-nowrap text-2xl font-bold text-black text-left md:text-5xl"
         >Welcome, back!
       </h2>
       <p class="text-xs mt-4 mb-6 text-slate-500">Let’s Get Started with MIIoT</p>
       <form @submit.prevent="submit" class="space-y-5">
+        <div class="flex-col my-7">
           <p class="text-sm mb-4">Email*</p>
           <input 
-            v-model="email" 
+            v-model="form.email" 
             type="email" 
             :class="inputClass"
-          /> 
-          <PasswordInput v-model="password" :error="!!error" />
-          <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
-          <button class="bg-blue-600 text-white rounded-lg px-4 py-4 w-full mt-6 hover:bg-blue-700">Login</button>
-          <div class="text-sm my-6 text-left">
-            <span>Forgot your password? </span>
-            <a href="../views/ResetPassword.vue" class="text-black underline">Reset</a>
-          </div>
-          <div class="flex items-center w-full my-6 px-6">
-            <div class="flex-1 h-px bg-gray-300"></div>
-            <span class="px-3 text-gray-400">OR</span>
-            <div class="flex-1 h-px bg-gray-300"></div>
-          </div>
-          <button @click="$router.push('/Register')" 
-            class="bg-white text-black border border-gray-300 rounded-lg shadow-md py-4 px-4 w-full mt-6 hover:bg-gray-100"
-            >Sign up
-          </button>
+            @blur.self="check_email"
+            /> 
+            <p v-if="error.email && !errorEmailForm" class="absolute error-text">Please fill this feild.</p>
+            <p v-if="errorEmailForm" class="absolute error-text">Invalid email format</p>
+        </div>
+        <PasswordInput v-model="form.password" v-model:error="error.password" />
+        <button class="bg-blue-600 text-white rounded-lg px-4 py-4 w-full mt-6 hover:bg-blue-700">Login</button>
+        <div class="text-sm my-6 text-left">
+          <span>Forgot your password? </span>
+          <a href="../views/ResetPassword.vue" class="text-black underline">Reset</a>
+        </div>
+        <div class="flex items-center w-full my-6 px-6">
+          <div class="flex-1 h-px bg-gray-300"></div>
+          <span class="px-3 text-gray-400">OR</span>
+          <div class="flex-1 h-px bg-gray-300"></div>
+        </div>
+        <button @click="$router.push('/Register')" 
+          class="bg-white text-black border border-gray-300 rounded-lg shadow-md py-4 px-4 w-full mt-6 hover:bg-gray-100"
+          >Sign up
+        </button>
       </form>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted } from 'vue';
+import { ref, computed, inject, watch, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import PasswordInput from './PasswordInput.vue';
+import BaseAlert from './BaseAlert.vue';
 
-const email = ref('');
-const password = ref('');
-const error = ref(null);
+const router = useRouter();
 const api = inject('api');
+const errorEmailForm =ref(false);
+const Invalide_backend = ref(false);
+
+const form = reactive ({
+  email: '',
+  password: ''
+})
+
+const error = reactive({
+  email: false,
+  password: false,
+});
 
 const inputClass = computed(() => [
-    'w-full rounded-lg px-4 py-2 mb-4 pr-10 outline-none',
-    error.value
+    'w-full rounded-lg px-4 py-2 pr-10 outline-none',
+    error.email || errorEmailForm.value
         ? 'border border-red-500 focus:ring-2 focus:ring-red-500'
         : 'border border-gray-300 focus:ring-2 focus:ring-brand'
 ]);
+
+const check_email = () => {
+  if (!form.email) {
+    error.email = true
+  }
+}
+
+watch(() => form.email, (newEmail) => {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (form.email) {
+    errorEmailForm.value = !pattern.test(newEmail.trim());
+  }
+});
 
 // const payload = computed(() => ({ email: email.value, password: password.value }));
 
@@ -68,22 +98,41 @@ const inputClass = computed(() => [
 //   }
 // }
 
+
+// watch(password, () => {
+//   error.password = true;
+// });
+
 const submit = async () => {
-  try {
-    const response = await api.post('/login', {
-      email: email.value,
-      password: password.value
-    });
+  Object.keys(error).forEach(key => {
+        (form[key].trim()) 
+        ? null
+        : error[key] = true
+  })
 
-    const data = response.data;
-    console.log('Login successful', data);
+  
 
-  } catch (e) {
-    error.value = 'Invalid email or password'
+  const hasErrors = Object.values(error).some(error => error)
+  
+  if (!hasErrors) {
+    try {
+      const response = await api.post('/login', {
+        email: form.email,
+        password: form.password
+      });
+
+      // const data = response.data;
+      // console.log('Login successful', data);
+      router.push('/HomePage')
+
+    } catch (e) {
+      Invalide_backend.value = true
+      setTimeout(() => {
+        Invalide_backend.value = false
+      }, 5000);
+    }
   }
 }
-
-
 </script>
 
 <style>

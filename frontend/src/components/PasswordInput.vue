@@ -7,6 +7,7 @@
                 :value="modelValue"
                 @input="$emit('update:modelValue', $event.target.value)"
                 :class="inputClass"
+                @blur.self="check_password"
             /> 
             <button
                 type="button"
@@ -20,11 +21,12 @@
                 />
             </button>
         </div>
+        <p v-if="error" class="absolute error-text">please fill this field</p>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed , watch } from 'vue';
 import eyeOff from '@/assets/icons/eye-off.png';
 import eyeOn from '@/assets/icons/eye-on.svg';
 
@@ -42,12 +44,28 @@ const props = defineProps({
     }
 });
 
+const check_password = () => {
+    if (!props.modelValue) {
+        emit('update:error',true)
+    };
+}
+
 const inputClass = computed(() => [
     'w-full rounded-lg px-4 py-2 pr-10 outline-none',
     props.error
     ? 'border border-red-500 focus:ring-2 focus:ring-red-500'
     : 'border border-gray-300 focus:ring-2 focus:ring-brand'
 ]);
-defineEmits(['update:modelValue'])
+
+watch(() => props.modelValue, () => {
+  if (props.modelValue) {
+    emit('update:error',false)
+  }
+});
+
+const emit = defineEmits([
+    'update:modelValue',
+    'update:error'
+])
 
 </script>
