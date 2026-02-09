@@ -14,8 +14,8 @@
             :class="inputClass"
             @blur.self="check_email"
             /> 
-            <p v-if="error.email && !errorEmailForm" class="absolute error-text">Please fill this feild.</p>
-            <p v-if="errorEmailForm" class="absolute error-text">Invalid email format</p>
+            <p v-if="error.email" class="absolute error-text">Please fill this feild</p>
+            <p v-if="errorEmailForm && !error.email" class="absolute error-text">Invalid email format</p>
         </div>
         <PasswordInput v-model="form.password" v-model:error="error.password" />
         <button class="bg-blue-600 text-white rounded-lg px-4 py-4 w-full mt-6 hover:bg-blue-700">Login</button>
@@ -29,7 +29,7 @@
           <div class="flex-1 h-px bg-gray-300"></div>
         </div>
         <button @click="$router.push('/Register')" 
-          class="bg-white text-black border border-gray-300 rounded-lg shadow-md py-4 px-4 w-full mt-6 hover:bg-gray-100"
+          class="bg-white text-black border border-gray-300 rounded-lg shadow-md py-4 px-4 w-full  hover:bg-gray-100"
           >Sign up
         </button>
       </form>
@@ -72,9 +72,19 @@ const check_email = () => {
 
 watch(() => form.email, (newEmail) => {
   const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (form.email) {
-    errorEmailForm.value = !pattern.test(newEmail.trim());
-  }
+  // if (form.email) {
+  //   errorEmailForm.value = !pattern.test(newEmail.trim());
+  // }
+
+  (form.email) ? (errorEmailForm.value = !pattern.test(newEmail.trim()) ,error.email = false)
+  : 
+    (errorEmailForm.value = !pattern.test(newEmail.trim()),
+    error.email = true)
+
+  // if (!form.email) {
+  //   errorEmailForm.value = !pattern.test(newEmail.trim());
+  //   error.email = true;
+  // }
 });
 
 // const payload = computed(() => ({ email: email.value, password: password.value }));
@@ -98,11 +108,6 @@ watch(() => form.email, (newEmail) => {
 //   }
 // }
 
-
-// watch(password, () => {
-//   error.password = true;
-// });
-
 const submit = async () => {
   Object.keys(error).forEach(key => {
         (form[key].trim()) 
@@ -110,27 +115,23 @@ const submit = async () => {
         : error[key] = true
   })
 
-  
-
   const hasErrors = Object.values(error).some(error => error)
   
   if (!hasErrors) {
-    try {
       const response = await api.post('/login', {
         email: form.email,
         password: form.password
       });
-
-      // const data = response.data;
-      // console.log('Login successful', data);
-      router.push('/HomePage')
-
-    } catch (e) {
-      Invalide_backend.value = true
-      setTimeout(() => {
-        Invalide_backend.value = false
-      }, 5000);
-    }
+ 
+      // console.log("status code", response.data.status_code)
+      if (response.data.status_code === 200) {
+        Invalide_backend.value = true
+        setTimeout(() => {
+          Invalide_backend.value = false
+        }, 5000);
+      } else {
+        router.push('/HomePage')
+      };
   }
 }
 </script>

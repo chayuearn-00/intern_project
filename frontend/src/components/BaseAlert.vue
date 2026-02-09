@@ -4,11 +4,11 @@
             v-if="visible" class="base-alert" :class="alertClass"
         >
             <!-- Icon -->
-            <span class="text-2xl leading-none self-center">
+            <span class="text-l md:text-2xl leading-none self-center">
             {{ icon }}
             </span>
             <!-- Content -->
-            <div class="flex-1 text-lg">
+            <div class="flex-1 text-sm md:text-lg">
                 <p class="font-medium">
                     {{ title }}
                 </p>
@@ -40,10 +40,10 @@ const props = defineProps({
     },
     title: String,
     message: String,
-    //   duration: {
-        //     type: Number,
-        //     default: 3000,
-        //   },
+      duration: {
+            type: Number,
+            default: 3000,
+          },
     })
     
 const visible = ref(true);
