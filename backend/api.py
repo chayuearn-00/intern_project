@@ -80,24 +80,26 @@ def realtime_api(data: UserAccount):
     rows = cur.fetchall()
 
     if not rows:
-        raise HTTPException(
-            status_code=404,
-            detail="Incorrect username or password"
-        )
-    
-    user_id = rows[0][0]
-    username = rows[0][1]
-    password = rows[0][2]
+        # raise HTTPException(
+        #     status_code=200,
+        #     detail="Incorrect username or password"
+        # )
+        return {
+            "status_code": 200,
+            "detail": "Incorrect username or password"
+        }
+
     hashed_password = rows[0][3]
-    name = rows[0][4]
-    surname = rows[0][5]
     email = rows[0][6]
     
     stored_hash = hashed_password
     
     # ถ้า Verify ผ่าน
     if not verify_password(data.password, stored_hash):
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
+        return {
+            "status_code": 200,
+            "detail": "Incorrect username or password"
+        }
     
     # *** จุดเปลี่ยน: สร้าง Token ***
     # ใส่ข้อมูล user.username เข้าไปใน token (เรียกว่า sub หรือ subject)
