@@ -1,29 +1,30 @@
 <template>
     <Transition name="fade-slide">
         <div
-        v-if="visible" class="base-alert" :class="alertClass">
-        <!-- Icon -->
-        <span class="text-2xl leading-none self-center">
-        {{ icon }}
-    </span>
-    <!-- Content -->
-    <div class="flex-1 text-lg">
-        <p class="font-medium">
-            {{ title }}
-        </p>
-        <p class="opacity-90">
-            {{ message }}
-        </p>
-    </div>
-    <!-- Close
-    <button
-    class="opacity-60 hover:opacity-100 transition"
-    @click="close"
-    >
-    ✕
-</button> -->
-</div>
-</Transition>
+            v-if="visible" class="base-alert" :class="alertClass"
+        >
+            <!-- Icon -->
+            <span class="text-2xl leading-none self-center">
+            {{ icon }}
+            </span>
+            <!-- Content -->
+            <div class="flex-1 text-lg">
+                <p class="font-medium">
+                    {{ title }}
+                </p>
+                <p class="opacity-90">
+                    {{ message }}
+                </p>
+            </div>
+            <!-- Close
+            <button
+            class="opacity-60 hover:opacity-100 transition"
+            @click="close"
+            >
+            ✕
+            </button> -->
+        </div>
+    </Transition>
 </template>
 
 <script setup>
@@ -45,7 +46,7 @@ const props = defineProps({
         //   },
     })
     
-const visible = ref(true)
+const visible = ref(true);
     
 const styles = {
   success: 'bg-green-100 text-green-800',
