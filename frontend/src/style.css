@@ -100,7 +100,12 @@
   .werning-alert {
     @apply bg-yellow-100 text-yellow-800
   }
-  
+  .footer {
+    @apply h-7 w-32 object-contain mx-8
+  }  
+  .footer_position {
+    @apply items-center max-w-[90%] mx-auto place-content-between
+  }
 }
 
 @keyframes marquee {
