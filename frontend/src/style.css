@@ -75,10 +75,10 @@
   }
 
   .navbar {
-    @apply sticky top-0 z-100 max-w-full bg-white p-6 gap-x-52;
+    @apply  top-0 z-100 max-w-full bg-white/30 backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
   }
   .navbar-card {
-    @apply flex px-80 w-full justify-between items-center;
+    @apply hidden lg:flex max-w-7xl mx-auto w-full justify-between items-center;
   }
   .navbar-item {
     @apply  text-xl hover:text-primary focus:ring-2 focus:ring-ring;
@@ -86,7 +86,12 @@
   .hiden-item {
     @apply hidden lg:flex self-center place-content-center;
   }
-
+  .mobile-menu-icon {
+    @apply lg:hidden flex items-center max-w-full place-content-between mx-8
+  }
+  .drop-box {
+    @apply block px-4 py-2 rounded-lg text-gray-600 hover:not-focus:bg-gray-100 hover:not-focus:text-black
+  }
 
   .base-alert {
     /* @apply fixed z-50 top-6 self-center md:top-8 md:right-10 md:left-auto md:w-[360px] rounded-xl px-4 py-3 shadow-lg flex gap-5 items-start place-content-center; */
@@ -95,4 +100,5 @@
   .werning-alert {
     @apply bg-yellow-100 text-yellow-800
   }
+
 }

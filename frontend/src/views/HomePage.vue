@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar.vue';
 
 <template>
     <div class="container overflow-hidden">
-        <NavBar />
+        <NavBar class="fixed w-full"/>
+        <img src="@/assets/Images/images_test.jpg" class="h-800" />
     </div>
 </template> 
