@@ -11,6 +11,7 @@
   --color-secondary: oklch(0.2792 0.0748 261.88);
   --color-dropdown: oklch(98.14% 0.0006 253.6);
   --color-menu: oklch(0.4017 0 0);
+  --color-myblone: oklch(0.4322 0.0013 17.21);
   --text-xxs: 9px;
   --width-card-size: 688px;
   --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -110,6 +111,16 @@
   }  
   .footer_position {
     @apply items-center max-w-[90%] mx-auto place-content-between
+  }
+
+  .information-box {
+    @apply flex bg-white rounded-lg px-4 py-4.5 h-14 shadow-sm place-content-between shadow-md
+  }
+  .information-topic {
+    @apply text-base text-myblone 
+  }
+  .information-text {
+    @apply flex-auto place-self-center text-center text-secondary font-semibold text-lg
   }
 }
 
