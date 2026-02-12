@@ -9,14 +9,14 @@ import TextCard from '../components/TextCard.vue';
 <template>
     <NavBar class="fixed w-full"/>
     <div class="container overflow-hidden">
-        <div class="flex flex-cols-2 place-content-center min-h-screen items-center justify-center max-w-full ">
-            <div class="grid-cols-2 ">
+        <div class="flex flex-cols-2 place-content-center min-h-screen items-center justify-center max-w-screen">
+            <div class="grid grid-cols-2">
                 <TextCard />
                 <InformationCard />
             </div>
-            <div class="footer_position">
+            <!-- <div class="footer_position">
                 <Footer />
-            </div>
+            </div> -->
         </div>
     </div>
 </template> 
