@@ -29,7 +29,7 @@
 
 @layer utilities {
   .container {
-    @apply bg-background m-0 max-w-full overflow-hidden min-h-screen;
+    @apply m-0 max-w-full overflow-hidden min-h-screen;
   }
   .card-login {
     @apply grid grid-cols-2 gap-4 p-10 rounded-4xl;
@@ -44,7 +44,7 @@
     @apply text-sm placeholder:text-sm bg-white rounded-lg focus:border-primary focus:ring-2 focus:ring-ring;
   }
   .button-login {
-    @apply py-3 my-2 text-white font-medium rounded-lg cursor-pointer;
+    @apply py-3 my-2 text-white font-medium rounded-lg cursor-pointer bg-primary focus:bg-secondary
   }
 
   .card-register {
@@ -78,7 +78,7 @@
   }
 
   .navbar {
-    @apply  top-0 z-100 max-w-full bg-white/30 backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
+    @apply  top-0 z-100 max-w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
   }
   .navbar-card {
     @apply hidden lg:flex max-w-7xl mx-auto w-full justify-between items-center;
@@ -121,6 +121,9 @@
   }
   .information-text {
     @apply  text-secondary font-semibold text-base lg:text-lg place-self-center text-center
+  }
+  .homepage-layout {
+    @apply flex flex-col w-full place-content-center min-h-screen items-center max-w-full lg:max-w-[80%] mx-auto pt-0
   }
 }
 
