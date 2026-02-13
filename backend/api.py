@@ -8,6 +8,7 @@ from fastapi import HTTPException, Depends
 from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
 
 # python -m uvicorn api:app --reload
+# http://127.0.0.1:8000/docs#
 
 app = FastAPI()
 
@@ -105,12 +106,12 @@ def realtime_api(data: UserAccount):
     # ใส่ข้อมูล user.username เข้าไปใน token (เรียกว่า sub หรือ subject)
     access_token = create_access_token(data={"sub": email, "type": "access"})
     # print(access_token)
-    refresh_token = create_refresh_token(data={"sub": email, "type": "refresh"})
+    # refresh_token = create_refresh_token(data={"sub": email, "type": "refresh"})
     
     # ส่ง Token กลับไปให้ลูกค้า
     return {
         "access_token": access_token, 
-        "refresh_token": refresh_token,
+        # "refresh_token": refresh_token,
         "token_type": "bearer"
     }
 
