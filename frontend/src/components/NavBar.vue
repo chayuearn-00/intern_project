@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import MenuButton from '../assets/icons/MenuButton.svg';
 import Logout from '../assets/icons/Logout.svg';
 import HomePageVector from '../assets/icons/HomePage-Vector.svg';
@@ -93,16 +93,42 @@ import { useRouter } from 'vue-router';
 const open = ref(false);
 const router = useRouter();
 const burger = ref(false);
+const api = inject('api');
 
 const pages = [
   { name: 'About Us', link: '/about' },
   { name: 'Contact', link: '/contact' },
   { name: 'Dashboard', link: '/dashboard' },
 ]
+// const logOut = () => {
+//     // return router.push('/login')
+//     try {
+//         api.post("/logout")
+        
+//         return router.push('/login')
+//     } catch (error) {
+//         console.error("Error during logout:", error)
+//     }
+// };
 
-const logOut = () => {
-    return router.push('/login')
+const logOut = async () => {
+    try {
+        await api.post("/logout")
+        
+        return router.push('/login')
+    } catch (error) {
+        console.error("Error during logout:", error)
+    }
 }
+// const logOut = async () => {
+//   try {
+//     await api.post("/logout", {}, { withCredentials: true })
+
+//     router.push("/login")
+//   } catch (error) {
+//     console.error("Error during logout:", error)
+//   }
+// }
 
 </script>
 
