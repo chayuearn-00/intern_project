@@ -121,6 +121,9 @@ const submit = async () => {
       const response = await api.post('/login', {
         email: form.email,
         password: form.password
+      }, 
+      {
+        withCredentials: true
       });
  
       // console.log("status code", response.data.status_code)
@@ -131,7 +134,7 @@ const submit = async () => {
         }, 5000);
       } else {
         router.push('/HomePage')
-        localStorage.setItem("access_token", response.data.access_token);
+        // localStorage.setItem("access_token", response.data.access_token);
       };
   }
 }
