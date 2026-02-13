@@ -59,11 +59,7 @@ const api = inject('api');
 const user = ref(null);
 
 onMounted(async () => {
-    const response = await api.get("/getdata", {
-    headers: {
-        Authorization: `Bearer ${token}`
-    }
-    })
+    const response = await api.get("/getdata")
     user.value = response.data[0];
     console.log(user.value)
 });
