@@ -3,7 +3,7 @@ from typing import Optional
 from jose import jwt,JWTError # ไลบรารีสำหรับจัดการ JWT (JSON Web Token)
 from passlib.context import CryptContext # ไลบรารีสำหรับ Hash Password
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status,  Cookie
 
 # --- ส่วนของการตั้งค่า (Configuration) ---
 
@@ -17,7 +17,7 @@ SECRET_KEY = "d14d3ec700478ec6ed14fc66249c3da9885e2d00bef155c05ef293339c8dbe45"
 ALGORITHM = "HS256"
 
 # ACCESS_TOKEN_EXPIRE_MINUTES: อายุของ Token (นาที) หลังจากนี้ Token จะใช้ไม่ได้ ต้อง Login ใหม่
-ACCESS_TOKEN_EXPIRE_second = 60
+ACCESS_TOKEN_EXPIRE_second = 2
 REFRESH_TOKEN_EXPIRE_MINUTES = 30
 
 # --- ส่วนของการจัดการ Password ---
@@ -105,18 +105,44 @@ def create_refresh_token(data: dict):
 #         timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
 #     )
 
-def verify_token(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: int | None = payload.get("sub")
+# def verify_token(token: str = Depends(oauth2_scheme)):
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         username: int | None = payload.get("sub")
 
-        if username is None:
+#         if username is None:
+#             raise HTTPException(
+#                 status_code=status.HTTP_401_UNAUTHORIZED,
+#                 detail="Invalid token payload",
+#             )
+
+#         return username
+
+#     except JWTError:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Invalid or expired token",
+#         )
+
+def verify_token(access_token: str = Cookie(None)):
+
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+
+    try:
+        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+
+        if email is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload",
             )
 
-        return username
+        return email
 
     except JWTError:
         raise HTTPException(
