@@ -17,7 +17,7 @@ SECRET_KEY = "d14d3ec700478ec6ed14fc66249c3da9885e2d00bef155c05ef293339c8dbe45"
 ALGORITHM = "HS256"
 
 # ACCESS_TOKEN_EXPIRE_MINUTES: อายุของ Token (นาที) หลังจากนี้ Token จะใช้ไม่ได้ ต้อง Login ใหม่
-ACCESS_TOKEN_EXPIRE_second = 150
+ACCESS_TOKEN_EXPIRE_second = 60
 REFRESH_TOKEN_EXPIRE_MINUTES = 30
 
 # --- ส่วนของการจัดการ Password ---
@@ -59,7 +59,7 @@ def create_access_token(data: dict):
     
     # คำนวณเวลาหมดอายุ (เวลาปัจจุบัน + 30 นาที)
     # utcnow() ใช้เวลามาตรฐานโลกเพื่อป้องกันปัญหาเรื่อง Timezone
-    expire = datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_second)
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_second)
     
     # เพิ่ม field 'exp' (expiration) เข้าไปในข้อมูล Token
     # JWT มาตรฐานจะเช็ค field นี้ให้อัตโนมัติว่าหมดอายุหรือยัง
