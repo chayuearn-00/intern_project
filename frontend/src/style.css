@@ -120,7 +120,7 @@
     @apply text-sm lg:text-base text-myblone
   }
   .information-text {
-    @apply flex-auto place-self-center text-center text-secondary font-semibold text-base lg:text-lg 
+    @apply  text-secondary font-semibold text-base lg:text-lg place-self-center text-center
   }
 }
 
