@@ -1,5 +1,5 @@
 <template>
-    <div class="container flex flex-col gap-10 md:gap-4 place-content-center">
+    <div class="container bg-background flex flex-col gap-10 md:gap-4 place-content-center">
         <BaseAlert v-if="errorAuthen" type="error" title="Error" message="Email already registered" />
         <BaseAlert v-if="success" type="success" title="Success" message="register successful" />
         <div class="card-register">
