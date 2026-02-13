@@ -107,20 +107,20 @@
     @apply bg-yellow-100 text-yellow-800
   }
   .footer {
-    @apply h-7 w-32 object-contain mx-8
+    @apply h-5 lg:h-7 w-32 object-contain mx-5 lg:mx-8
   }  
   .footer_position {
     @apply items-center max-w-[90%] mx-auto place-content-between mt-11
   }
 
   .information-box {
-    @apply flex bg-white rounded-lg px-4 py-4.5 h-14 shadow-sm place-content-between shadow-md
+    @apply flex bg-white rounded-lg px-4 py-4.5 shadow-md place-content-between
   }
   .information-topic {
-    @apply text-base text-myblone 
+    @apply text-sm lg:text-base text-myblone
   }
   .information-text {
-    @apply flex-auto place-self-center text-center text-secondary font-semibold text-lg
+    @apply flex-auto place-self-center text-center text-secondary font-semibold text-base lg:text-lg 
   }
 }
 

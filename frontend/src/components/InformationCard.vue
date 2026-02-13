@@ -5,8 +5,8 @@
 </script>
 
 <template>
-  <div class="flex items-center justify-center from-blue-100 to-blue-300 h-full gap-14">
-    <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl max-w-[632px]  w-full p-6 space-y-6">
+  <div class="flex items-center justify-center h-full">
+    <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-xl lg:max-w-[632px] w-full p-6 space-y-4 lg:space-y-6">
         <div class="flex gap-2">
             <h2 class="text-primary font-semibold text-2xl">
                 User
@@ -21,13 +21,13 @@
         <div class="w-31.5 h-31.5 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-md">
           <img src="@/assets/icons/LogoAvatar1.png" alt="Avatar" class="w-22 h-22 " />
         </div>
-        <div class="flex-1 bg-white rounded-full max-full px-4 py-6 text-2xl text-center text-secondary font-semibold shadow-md">
+        <div class="flex-1 bg-white rounded-full max-full px-4 py-6 text-base lg:text-2xl text-center text-secondary font-semibold shadow-md">
           USERNAME
         </div>
       </div>
 
       <!-- Data Box-->
-      <div class="flex flex-col gap-8 ">
+      <div class="flex flex-col gap-4 lg:gap-8 ">
         <div>
             <div class="information-box">
                 <label class="information-topic">Name:</label>
