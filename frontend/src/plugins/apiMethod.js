@@ -10,7 +10,7 @@ export const createApi = (options = {}) => {
     baseURL,
     headers: {
       "Content-Type": "application/json",
-    },
+    }, withCredentials: true,
   })
  
   apiClient.interceptors.request.use(

@@ -1,10 +1,9 @@
-from fastapi import FastAPI, HTTPException,Depends
+from fastapi import FastAPI, HTTPException,Depends, Response,  APIRouter
 from pydantic import BaseModel
 from datetime import datetime, timedelta
 import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from db_pg import get_pg_connection
-from fastapi import HTTPException, Depends
 from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
 
 # python -m uvicorn api:app --reload
@@ -61,7 +60,7 @@ class TokenData(BaseModel):
 # ======================
 
 @app.post("/login")
-def realtime_api(data: UserAccount):
+def realtime_api(data: UserAccount, response: Response):
     # JOIN ที่ PostgreSQL
     cur.execute("""
         SELECT d.user_id,
@@ -108,11 +107,25 @@ def realtime_api(data: UserAccount):
     # print(access_token)
     # refresh_token = create_refresh_token(data={"sub": email, "type": "refresh"})
     
+    
     # ส่ง Token กลับไปให้ลูกค้า
+    # return {
+    #     "access_token": access_token, 
+    #     # "refresh_token": refresh_token,
+    #     "token_type": "bearer"
+    # }
+    
+    # cookie
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,      # localhost ต้อง False
+        samesite="lax"
+    )
+
     return {
-        "access_token": access_token, 
-        # "refresh_token": refresh_token,
-        "token_type": "bearer"
+        "message": "Login successful"
     }
 
 @app.get("/getdata")
@@ -207,3 +220,9 @@ def refresh_token(refresh_token: str):
         # "refresh_token": new_refresh_token
     }
     
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(key="access_token")
+    return {
+        "message": "Logout successful"
+    }
