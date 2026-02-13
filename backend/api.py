@@ -127,6 +127,17 @@ def realtime_api(data: UserAccount, response: Response):
     return {
         "message": "Login successful"
     }
+    
+@app.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    )
+    return {"message": "Logged out successfully"}
+
 
 @app.get("/getdata")
 # def get_all_sensor_data():
@@ -220,9 +231,3 @@ def refresh_token(refresh_token: str):
         # "refresh_token": new_refresh_token
     }
     
-@app.post("/logout")
-def logout(response: Response):
-    response.delete_cookie(key="access_token")
-    return {
-        "message": "Logout successful"
-    }
