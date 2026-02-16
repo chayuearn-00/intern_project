@@ -1,13 +1,19 @@
-from fastapi import FastAPI, HTTPException,Depends, Response,  APIRouter
+from fastapi import FastAPI, HTTPException,Depends, Response,  APIRouter, Request, Cookie
 from pydantic import BaseModel
-from datetime import datetime, timedelta
-import psycopg2
 from fastapi.middleware.cors import CORSMiddleware
 from db_pg import get_pg_connection
 from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
+from dotenv import load_dotenv
+from authlib.integrations.starlette_client import OAuth
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.responses import RedirectResponse
+import os
+import json
 
 # python -m uvicorn api:app --reload
 # http://127.0.0.1:8000/docs#
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -27,9 +33,22 @@ app.add_middleware(
 )
 
 # ======================
-# APP
+# GOOGLE
 # ======================
+client_id=os.getenv("GOOGLE_CLIENT_ID")
+client_secret=os.getenv("GOOGLE_CLIENT_SECRET")
 
+app.add_middleware(SessionMiddleware, secret_key="supersecret")
+
+oauth = OAuth()
+
+oauth.register(
+    name="google",
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"}
+)
 
 
 # POSTGRES CONNECTION
@@ -104,7 +123,6 @@ def realtime_api(data: UserAccount, response: Response):
     # *** จุดเปลี่ยน: สร้าง Token ***
     # ใส่ข้อมูล user.username เข้าไปใน token (เรียกว่า sub หรือ subject)
     access_token = create_access_token(data={"sub": email, "type": "access"})
-    # print(access_token)
     # refresh_token = create_refresh_token(data={"sub": email, "type": "refresh"})
     
     
@@ -120,7 +138,7 @@ def realtime_api(data: UserAccount, response: Response):
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,      # localhost ต้อง False
+        secure=False,      # localhost ต้อง False
         samesite="lax"
     )
 
@@ -133,7 +151,7 @@ def logout(response: Response):
     response.delete_cookie(
         key="access_token",
         httponly=True,
-        secure=True,
+        secure=False,      # localhost ต้อง False
         samesite="lax"
     )
     return {"message": "Logged out successfully"}
@@ -216,6 +234,128 @@ def register_user(data: UserCreate):
         "message": "Register success",
         "status_code": "200"
     }
+    
+@app.get("/auth/google")
+async def login_google(request: Request):
+    redirect_uri = request.url_for("auth_callback")
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+# @app.get("/auth/google/callback")
+# async def auth_callback(request: Request):
+#     token = await oauth.google.authorize_access_token(request)
+#     user = token.get("userinfo")
+
+#     email = user["email"]
+
+#     conn = get_pg_connection()
+#     cur = conn.cursor()
+
+#     cur.execute("""
+#         SELECT email FROM profile
+#         WHERE email = %s
+#     """, (email,))
+
+#     existing_user = cur.fetchone()
+
+#     cur.close()
+#     conn.close()
+
+#     if existing_user:
+#         jwt_token = create_access_token(
+#             data={"sub": email, "type": "access"}
+#         )
+
+#         response = RedirectResponse(url="http://localhost:5173/homepage")
+#         response.set_cookie(
+#             key="access_token",
+#             value=jwt_token,
+#             httponly=True,
+#             secure=False,
+#             samesite="lax"
+#         )
+#         return response
+
+#     return RedirectResponse(
+#         url=f"http://localhost:5173/register?email={email}"
+#     )
+
+@app.get("/auth/google/callback")
+async def auth_callback(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+    user = token.get("userinfo")
+
+    google_user_data = {
+        "email": user.get("email"),
+        "first_name": user.get("given_name"),
+        "last_name": user.get("family_name")
+    }
+
+    conn = get_pg_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT email FROM profile
+        WHERE email = %s
+    """, (google_user_data["email"],))
+
+    existing_user = cur.fetchone()
+
+    cur.close()
+    conn.close()
+
+    # ✅ ถ้ามี user แล้ว → login ปกติ
+    if existing_user:
+        jwt_token = create_access_token(
+            data={"sub": google_user_data["email"], "type": "access"}
+        )
+
+        response = RedirectResponse(
+            url="http://localhost:5173/homepage"
+        )
+
+        response.set_cookie(
+            key="access_token",
+            value=jwt_token,
+            httponly=True,
+            secure=False,  # dev
+            samesite="lax"
+        )
+
+        return response
+
+    # ✅ ถ้ายังไม่มี user → เก็บ email ไว้ใน cookie แทน query
+    response = RedirectResponse(
+        url="http://localhost:5173/register"
+    )
+
+    response.set_cookie(
+        key="google_user",
+        value=json.dumps(google_user_data),
+        httponly=True,
+        secure=False,
+        samesite="lax"
+    )
+
+    return response
+
+# @app.get("/google-email")
+# def get_google_email(google_email: str = Cookie(None)):
+#     if not google_email:
+#         raise HTTPException(status_code=401, detail="No Google email found")
+
+#     return {"email": google_email}
+
+@app.get("/google-user")
+def get_google_user(google_user: str = Cookie(None)):
+    if not google_user:
+        raise HTTPException(status_code=401, detail="No Google user found")
+
+    try:
+        user_data = json.loads(google_user)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid cookie format")
+
+    return user_data
     
 @app.post("/refresh")
 def refresh_token(refresh_token: str):

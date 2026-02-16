@@ -20,17 +20,19 @@
         <PasswordInput v-model="form.password" v-model:error="error.password" />
         <button class="bg-blue-600 text-white rounded-lg px-4 py-4 w-full mt-6 hover:bg-blue-700">Login</button>
         <div class="text-sm my-6 text-left">
-          <span>Forgot your password? </span>
-          <a href="../views/ResetPassword.vue" class="text-black underline">Reset</a>
+          <span>Don't have an account? </span>
+          <a href="../views/RegisterPage.vue" class="text-black underline">Register</a>
         </div>
         <div class="flex items-center w-full my-6 px-6">
           <div class="flex-1 h-px bg-gray-300"></div>
           <span class="px-3 text-gray-400">OR</span>
           <div class="flex-1 h-px bg-gray-300"></div>
         </div>
-        <button @click="$router.push('/Register')" 
-          class="bg-white text-black border border-gray-300 rounded-lg shadow-md py-4 px-4 w-full  hover:bg-gray-100"
-          >Sign up
+        <button @click="loginWithGoogle" 
+          class="signin-google"
+          >
+            <img :src="googleImage" alt="Google Icon" class="w-5 h-5 mr-2">
+            Login with Google
         </button>
       </form>
     </div>
@@ -41,6 +43,7 @@ import { ref, computed, inject, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import PasswordInput from './PasswordInput.vue';
 import BaseAlert from './BaseAlert.vue';
+import googleImage from '../assets/icons/google-logo.png'
 
 const router = useRouter();
 const api = inject('api');
@@ -86,6 +89,10 @@ watch(() => form.email, (newEmail) => {
   //   error.email = true;
   // }
 });
+
+const loginWithGoogle = () => {
+  window.location.href = "http://localhost:8000/auth/google"
+}
 
 // const payload = computed(() => ({ email: email.value, password: password.value }));
 
@@ -139,7 +146,3 @@ const submit = async () => {
   }
 }
 </script>
-
-<style>
-
-</style>

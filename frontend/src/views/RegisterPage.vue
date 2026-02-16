@@ -13,7 +13,7 @@
                 <RegisterInputBox v-model="form.firstName" topic="First Name" :error="errors.firstName" class="sm:col-span-1"/>
                 <RegisterInputBox v-model="form.lastName" topic="Last Name" :error="errors.lastName" class="sm:col-span-1"/>
                 <RegisterInputBox v-model="form.username" topic="Username" :error="errors.username" />
-                <RegisterInputBox v-model="form.email" topic="Email" :error="errors.email" :error_authen="errorAuthen" type="email" :error_email_form="errorEmailForm" />
+                <RegisterInputBox v-model="form.email" topic="Email" :error="errors.email" :error_authen="errorAuthen" type="email" :error_email_form="errorEmailForm" :readonly="isGoogleUser" />
                 <div class="col-span-2">
                     <RegisterInputBox 
                         v-model="form.password" 
@@ -35,7 +35,7 @@
             </form>
             <div class="md:px-6">
                 <Or />
-                <button 
+                <button @click="loginWithGoogle"
                     class="signin-google">
                         <img :src="googleImage" alt="Google Icon" class="w-5 h-5 mr-2">
                         Sign in with Google
@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { reactive , ref, inject, watch} from 'vue'
+import { reactive , ref, inject, watch, onMounted} from 'vue'
 import RegisterInputBox from '../components/RegisterInput.vue'
 import googleImage from '../assets/icons/google-logo.png'
 import { useRouter } from 'vue-router'
@@ -68,6 +68,7 @@ const success = ref(false);
 const checkPasswordComponent = ref(null);
 const showPasswordWarning = ref(false);
 const errorEmailForm = ref(false);
+const isGoogleUser = ref(false);
 
 const form = reactive({
     firstName: '',
@@ -124,6 +125,31 @@ watch(() => form.password, () => {
     if (checkPasswordComponent.value) {
         showPasswordWarning.value = checkPasswordComponent.value.shouldShowErrors.value
     }
+})
+
+const loginWithGoogle = () => {
+  window.location.href = "http://localhost:8000/auth/google"
+}
+
+// onMounted(async () => {
+//     const response = await api.get("/google-email")
+//     form.email = response.data.email
+//     isGoogleUser.value = true
+//     console.log("isGoogleUser", isGoogleUser.value)
+// })
+
+onMounted(async () => {
+  try {
+    const response = await api.get("/google-user")
+
+    form.email = response.data.email
+    form.firstName = response.data.first_name
+    form.lastName = response.data.last_name
+
+    isGoogleUser.value = true
+  } catch (err) {
+    isGoogleUser.value = false
+  }
 })
 
 const handleSubmit = async () => {

@@ -58,11 +58,19 @@ const token = localStorage.getItem("access_token");
 const api = inject('api');
 const user = ref(null);
 
+// onMounted(async () => {
+//     const response = await api.get("/getdata")
+//     user.value = response.data[0];
+//     console.log(user.value)
+// });
 onMounted(async () => {
+  try {
     const response = await api.get("/getdata")
-    user.value = response.data[0];
-    console.log(user.value)
-});
+    user.value = response.data[0]
+  } catch (error) {
+    console.log("Failed to fetch user data:", error)
+  }
+})
 
 // const name = response.data.name;
 // const surname = response.data.surname;

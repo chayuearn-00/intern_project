@@ -18,11 +18,10 @@ export const createApi = (options = {}) => {
       if (config.url.includes("Login")) {
         return config
       }
- 
-      const token = localStorage.getItem("accessToken")
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-      }
+      // const token = localStorage.getItem("accessToken")
+      // if (token) {
+      //   config.headers.Authorization = `Bearer ${token}`
+      // }
       //   else if (router) {
       //   router.push(loginPath)
       // }
@@ -33,19 +32,24 @@ export const createApi = (options = {}) => {
  
   apiClient.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
       if (error.config.url.includes("Login")) {
         return Promise.reject(error)
       }
  
+      // if (error.response?.status === 401) {
+      //   console.log("Invalid action, redirecting to login")
+      //   localStorage.removeItem("accessToken")
+      //   localStorage.removeItem("member")
+      //   localStorage.removeItem("menuPermission")
+      //   if (router) {
+      //     router.push(loginPath)
+      //   }
+      // }
+
       if (error.response?.status === 401) {
-        console.log("Invalid action, redirecting to login")
-        localStorage.removeItem("accessToken")
-        localStorage.removeItem("member")
-        localStorage.removeItem("menuPermission")
-        if (router) {
-          router.push(loginPath)
-        }
+        await apiClient.post("/logout")
+        router.push("/login")
       }
  
       return Promise.reject(error)
