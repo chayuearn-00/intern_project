@@ -12,6 +12,13 @@
   --color-dropdown: oklch(98.14% 0.0006 253.6);
   --color-menu: oklch(0.4017 0 0);
   --color-myblone: oklch(0.4322 0.0013 17.21);
+  --color-status-bsafe: oklch(0.7172 0.1175 237.34);
+  --color-status-bok: oklch(0.7755 0.0947 179.86);
+  --color-status-ok: oklch(0.4531 0.0668 210.73);
+  --color-status-bwarn: oklch(0.9775 0.0813 106.31);
+  --color-status-warn: oklch(0.8582 0.1722 97.85);
+  --color-status-blow: oklch(0.657 0.215 2.81);
+  --color-status-low: oklch(0.3838 0.1395 355.03);
   --text-xxs: 9px;
   --width-card-size: 688px;
   --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
