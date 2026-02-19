@@ -1,8 +1,11 @@
 <template>
     <NavBar />
-    <div class="container bg-background">
-        <div class="flex felx-col gap-9 py-9 px-20">
-            <div class="flex max-w-full">
+    <div class="container bg-background ">
+        <div class="flex felx-col py-9 px-20 h-screen">
+            <div class="flex w-full place-content-between h-min">
+                <ConclutionCard />
+                <ConclutionCard />
+                <ConclutionCard />
                 <ConclutionCard />
             </div>
             <div class="flex max-w-full">
@@ -19,5 +22,6 @@
 
 <script setup>
 import NavBar from '../components/NavBar.vue';
+import ConclutionCard from '../components/dashboard/ConclutionCard.vue';
 
 </script>
