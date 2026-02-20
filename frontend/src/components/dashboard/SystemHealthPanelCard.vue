@@ -1,5 +1,5 @@
 <template>
-    <div class="dashboard-card gap-7.5 w-full">
+    <div class="dashboard-card justify-between gap-7.5 w-full">
         <div class="flex place-content-between items-center">
             <div class="flex gap-4 items-center">
                 <div class="relative bg-primary w-8.5 h-8.5 rounded-lg">
@@ -22,8 +22,8 @@
                 </thead>
                 <tbody>
                     <tr class="hover:bg-gray-50 border border-bg-secondary">
-                        <td class="px-4 py-2 text-base font-medium">Battery</td>
-                        <td class="px-4 py-2">
+                        <td class="px-4 text-base font-medium">Battery</td>
+                        <td class="px-4">
                             <span class="inline-flex">
                                 <Status />
                             </span>
