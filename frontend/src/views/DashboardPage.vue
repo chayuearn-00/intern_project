@@ -21,6 +21,8 @@
 </template>
 
 <script setup>
-import Realtime from '../../assets/icons/dashboard/Realtime.svg';
-import SensorCard from './SensorCard.vue';
+import NavBar from '../components/NavBar.vue';
+import ConclutionCard from '../components/dashboard/ConclutionCard.vue';
+import RealtimeSensorsCard from '../components/dashboard/RealtimeSensorsCard.vue';
+
 </script>
