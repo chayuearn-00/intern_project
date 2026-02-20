@@ -1,21 +1,22 @@
 <template>
-    <div class="dashboard-card gap-7.5">
-        <div class="flex place-content-between">
-            <div class="flex gap-4 justify-center">
-                <div class="relative bg-primary w-8.5 h-8.5 rounded-lg">
-                    <img :src="Realtime" class="absolute inset-0 m-auto"/>
+    <NavBar />
+    <div class="container bg-background ">
+        <div class="flex flex-col py-9 px-20 h-screen gap-7.5">
+            <div class="flex w-full place-content-between h-min">
+                <ConclutionCard />
+                <ConclutionCard />
+                <ConclutionCard />
+                <ConclutionCard />
+            </div>
+            <div class="flex w-full gap-7.5">
+                <div class="w-1/2">
+                    <Chart />
                 </div>
-                <p class="text-black font-bold text-xl">Real-time Sensors</p>
+                <div class="flex flex-col w-1/2 gap-7.5">
+                    <SystemHealthPanelCard />
+                    <RealtimeSensorsCard />
+                </div>
             </div>
-            <div class="bg-primary h-5 rounded-lg">
-                <p class="text-white text-xs font-semibold px-2.5 py-1">4 modules</p>
-            </div>
-        </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-7.5">
-            <SensorCard />
-            <SensorCard />
-            <SensorCard />
-            <SensorCard />
         </div>
     </div>
 </template>
@@ -24,5 +25,5 @@
 import NavBar from '../components/NavBar.vue';
 import ConclutionCard from '../components/dashboard/ConclutionCard.vue';
 import RealtimeSensorsCard from '../components/dashboard/RealtimeSensorsCard.vue';
-
+import SystemHealthPanelCard from '../components/dashboard/SystemHealthPanelCard.vue';
 </script>
