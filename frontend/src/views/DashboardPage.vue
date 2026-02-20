@@ -8,20 +8,20 @@
                 <ConclutionCard />
                 <ConclutionCard />
             </div>
-            <div class="flex max-w-full">
+            <div class="flex w-max gap-7.5">
                 <Chart />
-                <div class="flex flex-col">
+                <div class="flex flex-col w-1/2">
                     <DataTable />
-                    <DataLine />
+                    <RealtimeSensorsCard />
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script setup>
 import NavBar from '../components/NavBar.vue';
 import ConclutionCard from '../components/dashboard/ConclutionCard.vue';
+import RealtimeSensorsCard from '../components/dashboard/RealtimeSensorsCard.vue';
 
 </script>
