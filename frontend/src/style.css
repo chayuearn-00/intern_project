@@ -19,6 +19,7 @@
   --color-status-warn: oklch(0.8582 0.1722 97.85);
   --color-status-blow: oklch(0.657 0.215 2.81);
   --color-status-low: oklch(0.3838 0.1395 355.03);
+  --color-bg-secondary: oklch(0.8795 0.0624 247.08);
   --text-xxs: 9px;
   --width-card-size: 688px;
   --box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
