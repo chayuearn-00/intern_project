@@ -8,11 +8,11 @@
                 <ConclutionCard />
                 <ConclutionCard />
             </div>
-            <div class="flex w-full gap-7.5">
-                <div class="w-1/2">
+            <div class="grid grid-cols-2 w-full">
+                <div class="w-full">
                     <Chart />
                 </div>
-                <div class="flex flex-col w-1/2 gap-7.5">
+                <div class="flex flex-col w-full gap-7.5">
                     <SystemHealthPanelCard />
                     <RealtimeSensorsCard />
                 </div>
