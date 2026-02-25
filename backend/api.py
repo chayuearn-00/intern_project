@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException,Depends, Response,  APIRouter, Request, Cookie
+import asyncio
+from typing import List
+from fastapi import FastAPI, HTTPException,Depends, Response,  WebSocket, Request, Cookie, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from db_pg import get_pg_connection
@@ -7,6 +9,7 @@ from dotenv import load_dotenv
 from authlib.integrations.starlette_client import OAuth
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
+from influxdb import InfluxDBClient
 import os
 import json
 
@@ -14,6 +17,7 @@ import json
 # http://127.0.0.1:8000/docs#
 
 load_dotenv()
+connected_clients = []
 
 app = FastAPI()
 
@@ -31,6 +35,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+INFLUX_HOST = os.getenv("INFLUX_HOST")
+INFLUX_PORT = os.getenv("INFLUX_PORT")
+INFLUX_DB = os.getenv("INFLUX_DB")
 
 # ======================
 # GOOGLE
@@ -240,45 +248,6 @@ async def login_google(request: Request):
     redirect_uri = request.url_for("auth_callback")
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
-# @app.get("/auth/google/callback")
-# async def auth_callback(request: Request):
-#     token = await oauth.google.authorize_access_token(request)
-#     user = token.get("userinfo")
-
-#     email = user["email"]
-
-#     conn = get_pg_connection()
-#     cur = conn.cursor()
-
-#     cur.execute("""
-#         SELECT email FROM profile
-#         WHERE email = %s
-#     """, (email,))
-
-#     existing_user = cur.fetchone()
-
-#     cur.close()
-#     conn.close()
-
-#     if existing_user:
-#         jwt_token = create_access_token(
-#             data={"sub": email, "type": "access"}
-#         )
-
-#         response = RedirectResponse(url="http://localhost:5173/homepage")
-#         response.set_cookie(
-#             key="access_token",
-#             value=jwt_token,
-#             httponly=True,
-#             secure=False,
-#             samesite="lax"
-#         )
-#         return response
-
-#     return RedirectResponse(
-#         url=f"http://localhost:5173/register?email={email}"
-#     )
-
 @app.get("/auth/google/callback")
 async def auth_callback(request: Request):
     token = await oauth.google.authorize_access_token(request)
@@ -338,13 +307,6 @@ async def auth_callback(request: Request):
 
     return response
 
-# @app.get("/google-email")
-# def get_google_email(google_email: str = Cookie(None)):
-#     if not google_email:
-#         raise HTTPException(status_code=401, detail="No Google email found")
-
-#     return {"email": google_email}
-
 @app.get("/google-user")
 def get_google_user(google_user: str = Cookie(None)):
     if not google_user:
@@ -371,3 +333,83 @@ def refresh_token(refresh_token: str):
         # "refresh_token": new_refresh_token
     }
     
+# @app.get("/dashboard")
+# # def realtime_data(measurement: str,  fields = Depends(verify_token)):
+# def realtime_data(
+#     measurement: str,
+#     fields: List[str] = Query(...)
+#     ):
+
+#     client = InfluxDBClient(
+#         host=INFLUX_HOST,
+#         port=int(INFLUX_PORT),
+#         database=INFLUX_DB
+#     )
+
+#     fields = [f for f in fields if f.strip()]
+
+#     if not fields:
+#         return {"error": "No valid fields provided"}
+
+#     field_query = ", ".join(
+#         [f'LAST("{f}") AS "{f}"' for f in fields]
+#     )
+
+#     query = f'''
+#         SELECT {field_query}
+#         FROM "{measurement}"
+#     '''
+
+#     print("QUERY:", query)
+
+#     result = client.query(query)
+#     points = list(result.get_points())
+
+#     if not points:
+#         return {"error": "No data found"}
+
+#     data = {f: points[0].get(f) for f in fields}
+
+#     return data
+
+@app.websocket("/ws/dashboard")
+# async def websocket_dashboard(websocket: WebSocket, access_token: str = Cookie(None)):
+async def websocket_dashboard(websocket: WebSocket):
+    # if not access_token:
+    #     await websocket.close(code=1008)
+    #     return
+
+    # # verify JWT
+    # user = verify_token(access_token)
+    # if not user:
+    #     await websocket.close(code=1008)
+    #     return
+    
+    await websocket.accept()
+
+    client = InfluxDBClient(
+        host=INFLUX_HOST,
+        port=int(INFLUX_PORT),
+        database=INFLUX_DB
+    )
+
+    while True:
+        print("Loop running...")
+        
+        query = '''
+            SELECT LAST("battery") AS battery,
+                   LAST("motor") AS motor,
+                   LAST("sonar") AS sonar,
+                   LAST("signal") AS signal
+            FROM "MFEC"
+        '''
+
+        result = client.query(query)
+        points = list(result.get_points())
+        
+        print("POINTS:", points)
+
+        if points:
+            await websocket.send_json(points[0])
+
+        await asyncio.sleep(5)  # ดึงทุก 2 วิ

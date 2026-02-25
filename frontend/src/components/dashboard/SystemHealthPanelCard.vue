@@ -25,40 +25,39 @@
                         <td class="px-4 text-base font-medium">Battery</td>
                         <td class="px-4">
                             <span class="inline-flex">
-                                <Status />
+                                <Status device="battery" :value="data.battery"/>
                             </span>
                         </td>
-                        <td class="px-4 py-2">6%</td>
+                        <td class="px-4 py-2">{{ data.battery }} %</td>
                     </tr>
                     <tr class="hover:bg-gray-50 border border-bg-secondary">
                         <td class=" px-4 py-2 text-base font-medium">Motor</td>
                         <td class="px-4 py-2">
                             <span class="inline-flex">
-                                <Status />
+                                <Status device="motor" :value="data.motor"/>
                             </span>
                         </td>
-                        <td class="px-4 py-2">6%</td>
+                        <td class="px-4 py-2">{{ data.motor }} %</td>
                     </tr>
                     <tr class="hover:bg-gray-50 border border-bg-secondary">
                         <td class=" px-4 py-2 text-base font-medium">Signal</td>
                         <td class="px-4 py-2">
                             <span class="inline-flex">
-                                <Status />
+                                <Status device="signal" :value="data.signal"/>
                             </span>
                         </td>
-                        <td class="px-4 py-2">6%</td>
+                        <td class="px-4 py-2">{{ data.signal }} %</td>
                     </tr>
                     <tr class="hover:bg-gray-50 border border-bg-secondary">
                         <td class=" px-4 py-2 text-base font-medium">Sonar</td>
                         <td class="px-4 py-2">
                             <span class="inline-flex">
-                                <Status />
+                                <Status device="sonar" :value="data.sonar"/>
                             </span>
                         </td>
-                        <td class="px-4 py-2">6%</td>
+                        <td class="px-4 py-2">{{ data.sonar }} m</td>
                     </tr>
                 </tbody>
-
             </table>
         </div>
     </div>
@@ -66,5 +65,9 @@
 
 <script setup>
 import Shield from '../../assets/icons/dashboard/Shield.svg';
-import Status from '@/components/dashboard/Status.vue';
+import Status from './Status.vue';
+
+const props = defineProps ({
+    data: Object
+})
 </script>
