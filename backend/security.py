@@ -4,6 +4,10 @@ from jose import jwt,JWTError # ไลบรารีสำหรับจัด
 from passlib.context import CryptContext # ไลบรารีสำหรับ Hash Password
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status,  Cookie
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- ส่วนของการตั้งค่า (Configuration) ---
 
@@ -11,10 +15,10 @@ from fastapi import Depends, HTTPException, status,  Cookie
 # run code => "python -c "import secrets; print(secrets.token_hex(32))"
 # *สำคัญมาก* ในงานจริงห้ามเขียนใส่ Code แบบนี้ ควรเก็บใน Environment Variable เพื่อความปลอดภัย
 # ถ้าคนอื่นรู้ key นี้ เขาจะสามารถปลอมแปลง Token เป็นใครก็ได้ในระบบเรา
-SECRET_KEY = "d14d3ec700478ec6ed14fc66249c3da9885e2d00bef155c05ef293339c8dbe45" 
+SECRET_KEY = os.getenv("SECRET_KEY") 
 
 # ALGORITHM: อัลกอริทึมที่ใช้เข้ารหัส (HS256 เป็นแบบ Symmetric Key ที่นิยมใช้)
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("ALGORITHM") 
 
 # ACCESS_TOKEN_EXPIRE_MINUTES: อายุของ Token (นาที) หลังจากนี้ Token จะใช้ไม่ได้ ต้อง Login ใหม่
 ACCESS_TOKEN_EXPIRE_second = 2

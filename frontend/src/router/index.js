@@ -23,6 +23,12 @@ const routes = [
     component: () => import("../views/HomePage.vue"),
     meta: { title: "HomePage" },
   },
+  {
+    path: "/Dashboard",
+    name: "Dashboard",
+    component: () => import("../views/DashboardPage.vue"),
+    meta: { title: "Dashboard" },
+  },
 ]
 
 const router = createRouter({
