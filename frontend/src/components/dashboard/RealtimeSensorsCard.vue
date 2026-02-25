@@ -12,10 +12,10 @@
             </div>
         </div>
         <div className="grid grid-cols-2 grid-rows-2 h-full w-full gap-7.5">
-            <SensorCard />
-            <SensorCard />
-            <SensorCard />
-            <SensorCard />
+            <SensorCard device="battery" :value="data.battery"/>
+            <SensorCard device="motor" :value="data.motor"/>
+            <SensorCard device="signal" :value="data.signal"/>
+            <SensorCard device="sonar" :value="data.sonar"/>
         </div>
     </div>
 </template>
@@ -23,4 +23,8 @@
 <script setup>
 import Realtime from '../../assets/icons/dashboard/Realtime.svg'
 import SensorCard from '../dashboard/SensorCard.vue'
+
+const props = defineProps ({
+    data: Object,
+});
 </script>
