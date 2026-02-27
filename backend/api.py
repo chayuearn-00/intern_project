@@ -332,58 +332,19 @@ def refresh_token(refresh_token: str):
         "access_token": new_access_token,
         # "refresh_token": new_refresh_token
     }
-    
-# @app.get("/dashboard")
-# # def realtime_data(measurement: str,  fields = Depends(verify_token)):
-# def realtime_data(
-#     measurement: str,
-#     fields: List[str] = Query(...)
-#     ):
-
-#     client = InfluxDBClient(
-#         host=INFLUX_HOST,
-#         port=int(INFLUX_PORT),
-#         database=INFLUX_DB
-#     )
-
-#     fields = [f for f in fields if f.strip()]
-
-#     if not fields:
-#         return {"error": "No valid fields provided"}
-
-#     field_query = ", ".join(
-#         [f'LAST("{f}") AS "{f}"' for f in fields]
-#     )
-
-#     query = f'''
-#         SELECT {field_query}
-#         FROM "{measurement}"
-#     '''
-
-#     print("QUERY:", query)
-
-#     result = client.query(query)
-#     points = list(result.get_points())
-
-#     if not points:
-#         return {"error": "No data found"}
-
-#     data = {f: points[0].get(f) for f in fields}
-
-#     return data
-
+  
 @app.websocket("/ws/dashboard")
-# async def websocket_dashboard(websocket: WebSocket, access_token: str = Cookie(None)):
-async def websocket_dashboard(websocket: WebSocket):
-    # if not access_token:
-    #     await websocket.close(code=1008)
-    #     return
+async def websocket_dashboard(websocket: WebSocket, access_token: str = Cookie(None)):
+# async def websocket_dashboard(websocket: WebSocket):
+    if not access_token:
+        await websocket.close(code=1008)
+        return
 
-    # # verify JWT
-    # user = verify_token(access_token)
-    # if not user:
-    #     await websocket.close(code=1008)
-    #     return
+    # verify JWT
+    user = verify_token(access_token)
+    if not user:
+        await websocket.close(code=1008)
+        return
     
     await websocket.accept()
 
@@ -413,3 +374,26 @@ async def websocket_dashboard(websocket: WebSocket):
             await websocket.send_json(points[0])
 
         await asyncio.sleep(5)  # ดึงทุก 2 วิ
+        
+@app.get("/api/dashboard/latest")
+async def get_latest_records(limit: int = 20):
+    client = InfluxDBClient(
+        host=INFLUX_HOST,
+        port=int(INFLUX_PORT),
+        database=INFLUX_DB
+    )
+
+    query = f'''
+        SELECT "battery", "motor", "sonar", "signal"
+        FROM "MFEC"
+        ORDER BY time DESC
+        LIMIT {limit}
+    '''
+
+    result = client.query(query)
+    points = list(result.get_points())
+
+    # reverse ให้เรียงเก่า → ใหม่
+    points.reverse()
+
+    return points

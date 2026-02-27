@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-2xl shadow h-[250px] flex flex-col"> 
+    <div class="bg-white rounded-2xl shadow max-w-full h-[250px] flex flex-col"> 
       <div class="flex-1">
         <v-chart
           ref="chartRef"
@@ -16,12 +16,14 @@ import VChart from "vue-echarts";
 import * as echarts from "echarts";
 
 const props = defineProps ({
-    device: String,
-    value: Number
+    device1: String,
+    value1: Number,
+    device2: String,
+    value2: Number,
 });
 
-const data = ref([]);
-const currentValue = ref(props.value || 50);
+const data1 = ref([]);
+const data2 = ref([]);
 const chartRef = ref(null);
 let interval;
 
@@ -43,7 +45,14 @@ const chartOption = ref({
   },
   series: [
     {
-      name: props.device,
+      name: props.device1,
+      type: "line",
+      smooth: true,
+      data: [],
+      areaStyle: {}, // ทำให้มีพื้นหลังใต้เส้น
+    },
+    {
+      name: props.device2,
       type: "line",
       smooth: true,
       data: [],
@@ -60,38 +69,54 @@ const chartOption = ref({
 });
 
 onMounted(() => {
-  // Wait for DOM to be fully laid out and painted
+  // ensure chart resizes once the DOM is ready
   nextTick(() => {
     setTimeout(() => {
       if (chartRef.value) {
         chartRef.value.resize();
       }
-    }, 500);
+    }, 100);
   });
 
   watch(
-    () => props.value,
-    (newVal) => {
-      if (newVal !== undefined) {
-        updateChart(newVal);
+    () => [props.value1, props.value2],
+    ([newVal1, newVal2]) => {
+      if (newVal1 !== undefined) {
+        updateChart(newVal1, newVal2);
       }
     }
   );
 
-  function updateChart(value) {
+  function updateChart(val1, val2) {
     const time = new Date().toLocaleTimeString();
 
-    data.value.push({
+    data1.value.push({
       time,
-      value
+      value: val1
     });
 
-    if (data.value.length > 20) {
-      data.value.shift();
+    data2.value.push({
+      time,
+      value: val2
+    });
+
+    if (data1.value.length > 20) {
+      data1.value.shift();
     }
 
-    chartOption.value.xAxis.data = data.value.map(d => d.time);
-    chartOption.value.series[0].data = data.value.map(d => d.value);
+    if (val2 !== undefined) {
+    data2.value.push({ time, value: val2 });
+    if (data2.value.length > 20) data2.value.shift();
+  }
+
+  chartOption.value.xAxis.data = data1.value.map(d => d.time);
+
+  chartOption.value.series[0].data = data1.value.map(d => d.value);
+  // chartOption.value.series[1].data = data2.value.map(d => d.value);
+  chartOption.value.series[1].data =
+  val2 !== undefined
+    ? data2.value.map(d => d.value)
+    : [];
   }
 
   window.addEventListener("resize", handleResize);

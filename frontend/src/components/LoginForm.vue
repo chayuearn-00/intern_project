@@ -21,7 +21,7 @@
         <button class="bg-blue-600 text-white rounded-lg px-4 py-4 w-full mt-6 hover:bg-blue-700">Login</button>
         <div class="text-sm my-6 text-left">
           <span>Don't have an account? </span>
-          <a href="../views/RegisterPage.vue" class="text-black underline">Register</a>
+          <router-link to="/Register" class="text-black underline">Register</router-link>
         </div>
         <div class="flex items-center w-full my-6 px-6">
           <div class="flex-1 h-px bg-gray-300"></div>

@@ -139,6 +139,12 @@
   .table-topic {
     @apply px-4 py-2 text-left text-menu text-base font-semibold
   }
+  .show-graph {
+    @apply py-4 px-10 bg-gray-50 rounded-3xl font-bold shadow-md cursor-pointer hover:bg-gray-100
+  }
+  .hide-graph {
+    @apply p-5 bg-gray-700 rounded-3xl font-bold shadow-md cursor-pointer hover:bg-gray-900  
+  }
 }
 
 @keyframes marquee {
