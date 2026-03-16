@@ -237,6 +237,22 @@ def register_user(data: UserCreate):
     """, ( data.name, data.surname, data.email))
 
     conn.commit()
+    
+    jwt_token = create_access_token(
+        data={"sub": data["email"], "type": "access"}
+    )
+    
+    response = RedirectResponse(
+        url="http://localhost:5173/homepage"
+    )
+    
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,  # dev
+        samesite="lax"
+    )
 
     return {
         "message": "Register success",
@@ -297,20 +313,20 @@ async def auth_callback(request: Request):
         url="http://localhost:5173/register"
     )
 
-    response.set_cookie(
-        key="google_user",
-        value=json.dumps(google_user_data),
-        httponly=True,
-        secure=False,
-        samesite="lax"
-    )
+    # response.set_cookie(
+    #     key="google_user",
+    #     value=json.dumps(google_user_data),
+    #     httponly=True,
+    #     secure=False,
+    #     samesite="lax"
+    # )
 
     return response
 
 @app.get("/google-user")
 def get_google_user(google_user: str = Cookie(None)):
-    if not google_user:
-        raise HTTPException(status_code=401, detail="No Google user found")
+    # if not google_user:
+    #     raise HTTPException(status_code=401, detail="No Google user found")
 
     try:
         user_data = json.loads(google_user)
