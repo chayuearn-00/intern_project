@@ -1,5 +1,5 @@
 <template>
-    <div class="dashboard-card justify-between gap-7.5 w-full">
+    <div class="dashboard-card justify-between gap-4 w-full">
         <div class="flex place-content-between items-center">
             <div class="flex gap-4 items-center">
                 <div class="relative bg-primary w-8.5 h-8.5 rounded-lg">

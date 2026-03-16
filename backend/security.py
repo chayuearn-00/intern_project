@@ -21,7 +21,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM") 
 
 # ACCESS_TOKEN_EXPIRE_MINUTES: อายุของ Token (นาที) หลังจากนี้ Token จะใช้ไม่ได้ ต้อง Login ใหม่
-ACCESS_TOKEN_EXPIRE_second = 2
+ACCESS_TOKEN_EXPIRE_second = 60
 REFRESH_TOKEN_EXPIRE_MINUTES = 30
 
 # --- ส่วนของการจัดการ Password ---

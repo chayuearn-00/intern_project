@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col w-full bg-bg-secondary p-4 rounded-2xl justify-between h-full">
+    <div class="flex flex-col w-full bg-bg-secondary p-4 gap-3 rounded-2xl justify-between h-full">
         <div class="flex gap-4 justify-center w-max">
             <img :src="images[device]" />
             <p class="text-xl font-semibold">{{text[device]}}</p>

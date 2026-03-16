@@ -86,7 +86,8 @@
   }
 
   .navbar {
-    @apply  sticky top-0 z-100 w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
+    @apply w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
+    /* @apply  sticky top-0 z-100 w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52; */
   }
   .navbar-card {
     @apply hidden lg:flex max-w-7xl mx-auto w-full justify-between items-center;
@@ -134,10 +135,16 @@
     @apply flex flex-col w-full place-content-center min-h-screen items-center max-w-full lg:max-w-[80%] mx-auto pt-0
   }
   .dashboard-card {
-    @apply flex flex-col p-7.5 bg-white rounded-3xl
+    @apply flex flex-col p-5 bg-white rounded-3xl
   }
   .table-topic {
     @apply px-4 py-2 text-left text-menu text-base font-semibold
+  }
+  .show-graph {
+    @apply py-4 px-10 bg-gray-50 rounded-3xl font-bold shadow-md cursor-pointer hover:bg-gray-200
+  }
+  .hide-graph {
+    @apply py-4 px-10 bg-gray-400 rounded-3xl font-bold shadow-md cursor-pointer text-gray-600 hover:bg-gray-500   
   }
 }
 

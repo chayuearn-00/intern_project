@@ -3,6 +3,13 @@ import logo_person from '../assets/icons/logo_person.png'
 import Download from '../assets/icons/Download.svg'
 import ArrowExplore from '../assets/icons/ArrowExplore.png'
 import InformationCard from './InformationCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function dashboard() {
+    router.push('/Dashboard');
+}
 
 </script>
 
@@ -23,8 +30,9 @@ import InformationCard from './InformationCard.vue';
             <div class="flex gap-6 mt-4 lg:mt-10 place-items-center ">
                 <button
                     class="bg-primary hover:bg-blue-700 text-white text-sm lg:text-lg py-3 lg:py-4 px-8.5 rounded-lg flex items-center gap-2 transition"
+                    @click="dashboard"
                 >
-                    Explore
+                    Dashboard
                     <span class="transition-transform duration-300 hover:-rotate-45"
                         ><img :src="ArrowExplore" alt="arrow explore"  class="w-5 h-5" />
                     </span>
