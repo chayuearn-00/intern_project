@@ -1,5 +1,5 @@
 <template>
-    <div class="dashboard-card justify-between h-full w-full gap-4">
+    <div class="dashboard-card justify-between  w-full gap-4">
         <div class="flex gap-4 items-center">
             <div class="relative bg-primary w-8.5 h-8.5 rounded-lg">
                 <img :src="Chart" class="absolute inset-0 m-auto"/>
@@ -16,28 +16,29 @@
                 <Status device="battery" :value="data.battery"/>
             </div>
             <Graph 
-                device1="battery" :value1="data.battery" 
-                device2="motor" :value2="data.motor"/>
-            <!-- <Graph :devices="devices" :initialRecords="records" /> -->
-            <!-- <Graph :devices="devices" /> -->
+                :devices="allDevices"
+                :initialRecords="initialRecords"
+                :latestData="latestData"
+                :visibleDevices="visibleDevices"
+            />
             <div class="flex justify-between p-4">
                 <button 
-                    class="show-graph" 
+                    :class="(show_graph.battery.value) ? 'show-graph' : 'hide-graph'" 
                     @click="show_graph.battery.value = !show_graph.battery.value"
                     >Battery
                 </button>
                 <button 
-                    class="show-graph"
+                    :class="(show_graph.motor.value) ? 'show-graph' : 'hide-graph'" 
                     @click="show_graph.motor.value = !show_graph.motor.value"
                     >Motor
                 </button>
                 <button 
-                    class="show-graph"
+                    :class="(show_graph.signal.value) ? 'show-graph' : 'hide-graph'" 
                     @click="show_graph.signal.value = !show_graph.signal.value"
                     >Signal
                 </button>
                 <button 
-                    class="show-graph"
+                    :class="(show_graph.sonar.value) ? 'show-graph' : 'hide-graph'" 
                     @click="show_graph.sonar.value = !show_graph.sonar.value"
                     >Sonar
                 </button>
@@ -62,7 +63,7 @@ import Battery from '../../assets/icons/dashboard/Battery.svg'
 import Motor from  '../../assets/icons/dashboard/Motor.svg'
 import Status from './Status.vue';
 import Graph from './Graph.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps ({
     data: Object,
@@ -72,23 +73,56 @@ const show_graph = {
     battery: ref(true),
     motor: ref(true),
     signal: ref(true),
-    sonar: ref(true),
+    sonar: ref(false),
 };
 
-// make devices a computed property so updates propagate
-const devices = computed(() => {
-  const list = [];
+// All possible devices
+const allDevices = [
+    { id: "battery", name: "Battery" },
+    { id: "motor", name: "Motor" },
+    { id: "signal", name: "Signal" },
+    { id: "sonar", name: "Sonar" },
+];
 
-  if (show_graph.battery.value) {
-    list.push({ name: "battery", value: props.data.battery });
-  }
-  if (show_graph.motor.value) {
-    list.push({ name: "motor", value: props.data.motor });
-  }
-  if (show_graph.signal.value) {
-    list.push({ name: "signal", value: props.data.signal });
-  }
+// Devices to show (by id)
+const visibleDevices = computed(() => {
+    return allDevices
+        .filter(dev => show_graph[dev.id]?.value)
+        .map(dev => dev.id);
+});
 
-  return list;
+// Initial records for each device (fetch from backend)
+const initialRecords = ref({
+    battery: [],
+    motor: [],
+    signal: [],
+    sonar: [],
+});
+
+onMounted(async () => {
+    try {
+        const res = await fetch('http://localhost:8000/api/dashboard/latest?limit=20');
+        const data = await res.json();
+        initialRecords.value = {
+            battery: data.map(d => ({ time: d.time, value: d.battery })),
+            motor: data.map(d => ({ time: d.time, value: d.motor })),
+            signal: data.map(d => ({ time: d.time, value: d.signal })),
+            sonar: data.map(d => ({ time: d.time, value: d.sonar })),
+        };
+    } catch (err) {
+        console.error('Failed to fetch sensor data:', err);
+    }
+});
+
+// Latest data for each device (should be provided by parent or fetched)
+const latestData = computed(() => {
+    // Example: { battery: { time, value }, ... }
+    // Replace with actual latest data logic
+    return {
+        battery: { time: '', value: props.data.battery },
+        motor: { time: '', value: props.data.motor },
+        signal: { time: '', value: props.data.signal },
+        sonar: { time: '', value: props.data.sonar },
+    };
 });
 </script>

@@ -1,19 +1,19 @@
 <template>
     <!-- <div class="container bg-background h-screen overflow-y-auto"> -->
-    <div class="container bg-background h-full overflow-y-auto">
-        <NavBar class="sticky top-0 z-50" />
-        <div class="flex flex-col py-9 px-20 h-full justify-between gap-7.5">
+    <div class="container bg-background h-screen overflow-hidden">
+        <NavBar />
+        <div class="flex flex-col py-6 px-20 justify-between gap-6">
             <div class="flex w-full place-content-between h-min">
                 <ConclutionCard device="battery" :value="data.battery"/>
                 <ConclutionCard device="motor" :value="data.motor"/>
                 <ConclutionCard device="signal" :value="data.signal"/>
                 <ConclutionCard device="sonar" :value="data.sonar"/>
             </div>
-            <div class="flex flex-col lg:grid lg:grid-cols-2 w-full h-full justify-between gap-4 lg:gap-7.5">
+            <div class="flex flex-col lg:grid lg:grid-cols-2 w-full h-full justify-between lg:gap-7.5">
                 <div class="w-full h-full">
                     <Chart :data="data"/>
                 </div>
-                <div class="flex flex-col w-full h-full justify-center gap-7.5">
+                <div class="flex flex-col w-full h-full gap-6">
                     <SystemHealthPanelCard :data="data"/>
                     <RealtimeSensorsCard :data="data"/>
                 </div>
