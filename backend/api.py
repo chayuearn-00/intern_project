@@ -1,12 +1,15 @@
-from fastapi import FastAPI, HTTPException,Depends, Response,  APIRouter, Request, Cookie
+import asyncio
+from typing import List
+from fastapi import FastAPI, HTTPException,Depends, Response,  WebSocket, Request, Cookie, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from db_pg import get_pg_connection
-from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
+from security import get_password_hash, verify_password, create_access_token, verify_token
 from dotenv import load_dotenv
 from authlib.integrations.starlette_client import OAuth
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.responses import RedirectResponse
+from influxdb import InfluxDBClient
 import os
 import json
 
@@ -14,6 +17,7 @@ import json
 # http://127.0.0.1:8000/docs#
 
 load_dotenv()
+connected_clients = []
 
 app = FastAPI()
 
@@ -31,6 +35,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+INFLUX_HOST = os.getenv("INFLUX_HOST")
+INFLUX_PORT = os.getenv("INFLUX_PORT")
+INFLUX_DB = os.getenv("INFLUX_DB")
 
 # ======================
 # GOOGLE
@@ -81,20 +89,24 @@ class TokenData(BaseModel):
 @app.post("/login")
 def realtime_api(data: UserAccount, response: Response):
     # JOIN ที่ PostgreSQL
-    cur.execute("""
-        SELECT d.user_id,
-               d.username,
-               d.password,
-               d.hashed_password,
-               df.name,
-               df.surname,
-               df.email
-        FROM account d
-        JOIN profile df
-            ON d.user_id = df.id
-        WHERE df.email = %s
-            and d.password = %s;
-    """, (data.email,data.password,))
+    try: 
+        cur.execute("""
+            SELECT d.user_id,
+                d.username,
+                d.password,
+                d.hashed_password,
+                df.name,
+                df.surname,
+                df.email
+            FROM account d
+            JOIN profile df
+                ON d.user_id = df.id
+            WHERE df.email = %s
+                and d.password = %s;
+        """, (data.email,data.password,))
+        
+    except: 
+        return("failed database connecting")
 
     rows = cur.fetchall()
 
@@ -158,7 +170,6 @@ def logout(response: Response):
 
 
 @app.get("/getdata")
-# def get_all_sensor_data():
 def read_me(email: str = Depends(verify_token)):
     conn = get_pg_connection()
     cur = conn.cursor()    
@@ -179,7 +190,7 @@ def read_me(email: str = Depends(verify_token)):
 
     cur.close()
     conn.close()
-
+    
     return [
         {
             "name": r[2],
@@ -229,6 +240,22 @@ def register_user(data: UserCreate):
     """, ( data.name, data.surname, data.email))
 
     conn.commit()
+    
+    jwt_token = create_access_token(
+        data={"sub": data["email"], "type": "access"}
+    )
+    
+    response = RedirectResponse(
+        url="http://localhost:5173/homepage"
+    )
+    
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,  # dev
+        samesite="lax"
+    )
 
     return {
         "message": "Register success",
@@ -239,45 +266,6 @@ def register_user(data: UserCreate):
 async def login_google(request: Request):
     redirect_uri = request.url_for("auth_callback")
     return await oauth.google.authorize_redirect(request, redirect_uri)
-
-# @app.get("/auth/google/callback")
-# async def auth_callback(request: Request):
-#     token = await oauth.google.authorize_access_token(request)
-#     user = token.get("userinfo")
-
-#     email = user["email"]
-
-#     conn = get_pg_connection()
-#     cur = conn.cursor()
-
-#     cur.execute("""
-#         SELECT email FROM profile
-#         WHERE email = %s
-#     """, (email,))
-
-#     existing_user = cur.fetchone()
-
-#     cur.close()
-#     conn.close()
-
-#     if existing_user:
-#         jwt_token = create_access_token(
-#             data={"sub": email, "type": "access"}
-#         )
-
-#         response = RedirectResponse(url="http://localhost:5173/homepage")
-#         response.set_cookie(
-#             key="access_token",
-#             value=jwt_token,
-#             httponly=True,
-#             secure=False,
-#             samesite="lax"
-#         )
-#         return response
-
-#     return RedirectResponse(
-#         url=f"http://localhost:5173/register?email={email}"
-#     )
 
 @app.get("/auth/google/callback")
 async def auth_callback(request: Request):
@@ -328,27 +316,20 @@ async def auth_callback(request: Request):
         url="http://localhost:5173/register"
     )
 
-    response.set_cookie(
-        key="google_user",
-        value=json.dumps(google_user_data),
-        httponly=True,
-        secure=False,
-        samesite="lax"
-    )
+    # response.set_cookie(
+    #     key="google_user",
+    #     value=json.dumps(google_user_data),
+    #     httponly=True,
+    #     secure=False,
+    #     samesite="lax"
+    # )
 
     return response
 
-# @app.get("/google-email")
-# def get_google_email(google_email: str = Cookie(None)):
-#     if not google_email:
-#         raise HTTPException(status_code=401, detail="No Google email found")
-
-#     return {"email": google_email}
-
 @app.get("/google-user")
 def get_google_user(google_user: str = Cookie(None)):
-    if not google_user:
-        raise HTTPException(status_code=401, detail="No Google user found")
+    # if not google_user:
+    #     raise HTTPException(status_code=401, detail="No Google user found")
 
     try:
         user_data = json.loads(google_user)
@@ -370,4 +351,68 @@ def refresh_token(refresh_token: str):
         "access_token": new_access_token,
         # "refresh_token": new_refresh_token
     }
+  
+@app.websocket("/ws/dashboard")
+async def websocket_dashboard(websocket: WebSocket, access_token: str = Cookie(None)):
+# async def websocket_dashboard(websocket: WebSocket):
+    if not access_token:
+        await websocket.close(code=1008)
+        return
+
+    # verify JWT
+    user = verify_token(access_token)
+    if not user:
+        await websocket.close(code=1008)
+        return
     
+    await websocket.accept()
+
+    client = InfluxDBClient(
+        host=INFLUX_HOST,
+        port=int(INFLUX_PORT),
+        database=INFLUX_DB
+    )
+
+    while True:
+        print("Loop running...")
+        
+        query = '''
+            SELECT LAST("battery") AS battery,
+                   LAST("motor") AS motor,
+                   LAST("sonar") AS sonar,
+                   LAST("signal") AS signal
+            FROM "MFEC"
+        '''
+
+        result = client.query(query)
+        points = list(result.get_points())
+        
+        print("POINTS:", points)
+
+        if points:
+            await websocket.send_json(points[0])
+
+        await asyncio.sleep(5)  # ดึงทุก 2 วิ
+        
+@app.get("/api/dashboard/latest")
+async def get_latest_records(limit: int = 20):
+    client = InfluxDBClient(
+        host=INFLUX_HOST,
+        port=int(INFLUX_PORT),
+        database=INFLUX_DB
+    )
+
+    query = f'''
+        SELECT "battery", "motor", "sonar", "signal"
+        FROM "MFEC"
+        ORDER BY time DESC
+        LIMIT {limit}
+    '''
+
+    result = client.query(query)
+    points = list(result.get_points())
+
+    # reverse ให้เรียงเก่า → ใหม่
+    points.reverse()
+
+    return points
