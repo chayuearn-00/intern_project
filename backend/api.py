@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException,Depends, Response,  WebSocket, Reques
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from db_pg import get_pg_connection
-from security import get_password_hash, verify_password, create_access_token, create_refresh_token, verify_token
+from security import get_password_hash, verify_password, create_access_token, verify_token
 from dotenv import load_dotenv
 from authlib.integrations.starlette_client import OAuth
 from starlette.middleware.sessions import SessionMiddleware
@@ -89,20 +89,24 @@ class TokenData(BaseModel):
 @app.post("/login")
 def realtime_api(data: UserAccount, response: Response):
     # JOIN ที่ PostgreSQL
-    cur.execute("""
-        SELECT d.user_id,
-               d.username,
-               d.password,
-               d.hashed_password,
-               df.name,
-               df.surname,
-               df.email
-        FROM account d
-        JOIN profile df
-            ON d.user_id = df.id
-        WHERE df.email = %s
-            and d.password = %s;
-    """, (data.email,data.password,))
+    try: 
+        cur.execute("""
+            SELECT d.user_id,
+                d.username,
+                d.password,
+                d.hashed_password,
+                df.name,
+                df.surname,
+                df.email
+            FROM account d
+            JOIN profile df
+                ON d.user_id = df.id
+            WHERE df.email = %s
+                and d.password = %s;
+        """, (data.email,data.password,))
+        
+    except: 
+        return("failed database connecting")
 
     rows = cur.fetchall()
 
@@ -166,7 +170,6 @@ def logout(response: Response):
 
 
 @app.get("/getdata")
-# def get_all_sensor_data():
 def read_me(email: str = Depends(verify_token)):
     conn = get_pg_connection()
     cur = conn.cursor()    
@@ -187,7 +190,7 @@ def read_me(email: str = Depends(verify_token)):
 
     cur.close()
     conn.close()
-
+    
     return [
         {
             "name": r[2],
