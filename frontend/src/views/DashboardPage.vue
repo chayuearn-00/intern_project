@@ -54,6 +54,7 @@ ws.onmessage = (event) => {
   data.value = JSON.parse(event.data)
 }
 
+
 //เมื่อการเชื่อมต่อหยุดลง หรือเกิดการผิดพลาด จะเกิด event
 ws.onclose = (event) => {
   // 1008 = policy violation (auth fail)
