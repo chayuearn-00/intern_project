@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-2xl shadow max-w-full h-[275px] flex flex-col"> 
+    <div class="bg-white rounded-2xl shadow w-full h-100 flex flex-col"> 
       <div class="flex-1">
         <v-chart
           ref="chartRef"
@@ -25,11 +25,14 @@ const props = defineProps({
 const chartRef = ref(null);
 
 const chartOption = ref({
+  //แสดงข้อมูลที่เอาเมาส์ไปชี้
   tooltip: { trigger: "axis" },
+  //ชื่อข้อมูลในกราฟ (จะมีการใส่ค่าข้อมูลตามหลังมาอีกที)
   legend: {},
   xAxis: {
     type: "category",
     data: [],
+    // gap ซ้าย-ขวา
     boundaryGap: false,
   },
   yAxis: {
@@ -37,12 +40,14 @@ const chartOption = ref({
     min: 0,
     max: 100,
   },
+  // ชุดข้อมูล
   series: [],
   grid: {
     left: 20,
     right: 40,
     top: 20,
     bottom: 30,
+    // ขยับกราฟอัตโนมัติ
     containLabel: true,
   },
 });
