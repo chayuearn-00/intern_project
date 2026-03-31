@@ -8,20 +8,22 @@
         </div>
         <!-- <div class="flex flex-col w-full h-full bg-bg-secondary rounded-3xl p-5 justify-between gap-5"> -->
         <div class="flex flex-col w-full h-full bg-bg-secondary rounded-3xl p-5 gap-5">
-            <div class="flex justify-between items-center ">
+            <div class="flex justify-between items-center">
                 <div class="flex gap-4">
                     <img :src="Battery" />
                     <p class="text-black font-semibold text-xl">Battery Over Time</p>
                 </div>
                 <Status device="battery" :value="data.battery"/>
             </div>
-            <Graph 
-                :devices="allDevices"
-                :initialRecords="initialRecords"
-                :latestData="latestData"
-                :visibleDevices="visibleDevices"
-            />
-            <div class="flex justify-between p-4">
+            <div class="">
+                <Graph 
+                    :devices="allDevices"
+                    :initialRecords="initialRecords"
+                    :latestData="latestData"
+                    :visibleDevices="visibleDevices"
+                />
+            </div>
+            <!-- <div class="flex justify-between p-4">
                 <button 
                     :class="(show_graph.battery.value) ? 'show-graph' : 'hide-graph'" 
                     @click="show_graph.battery.value = !show_graph.battery.value"
@@ -42,7 +44,7 @@
                     @click="show_graph.sonar.value = !show_graph.sonar.value"
                     >Sonar
                 </button>
-            </div>
+            </div> -->
         </div>
         <!-- <div class="flex flex-col w-full h-full bg-bg-secondary rounded-3xl p-5 justify-between gap-5">
             <div class="flex justify-between items-center">

@@ -86,8 +86,8 @@
   }
 
   .navbar {
-    @apply w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
-    /* @apply  sticky top-0 z-100 w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52; */
+    /* @apply w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52; */
+    @apply  sticky top-0 z-100 w-full bg-white backdrop-blur-lg backdrop-brightness-150 p-6 gap-x-52;
   }
   .navbar-card {
     @apply hidden lg:flex max-w-7xl mx-auto w-full justify-between items-center;

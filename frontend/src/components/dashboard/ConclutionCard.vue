@@ -3,7 +3,7 @@
         <div class="flex w-full items-center justify-between">
             <div class="flex gap-5 items-center">
                 <div class="relative w-12.5 h-12.5 bg-primary rounded-full">
-                    <img :src="images[device]" class="absolute inset-0 m-auto" />
+                    <img :src="images[device]" class="absolute z-10 inset-0 m-auto" />
                 </div>
                 <p class="text-xl font-bold ">{{texts[device]}}</p>
             </div>

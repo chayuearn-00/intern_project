@@ -21,6 +21,7 @@ connected_clients = []
 
 app = FastAPI()
 
+# list ของ URL ที่ “อนุญาต” ให้มาเรียก API ของเราได้
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -28,6 +29,7 @@ origins = [
     "http://localhost:5500",
 ]
 
+#CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -46,6 +48,7 @@ INFLUX_DB = os.getenv("INFLUX_DB")
 client_id=os.getenv("GOOGLE_CLIENT_ID")
 client_secret=os.getenv("GOOGLE_CLIENT_SECRET")
 
+#จำ user โดยเก็บ cookie ไว้ เวลาเข้ามาใหม่ก็จะรู้ว่าคนนี้เคยเข้ามาก่อนแล้ว
 app.add_middleware(SessionMiddleware, secret_key="supersecret")
 
 oauth = OAuth()
@@ -137,7 +140,6 @@ def realtime_api(data: UserAccount, response: Response):
     access_token = create_access_token(data={"sub": email, "type": "access"})
     # refresh_token = create_refresh_token(data={"sub": email, "type": "refresh"})
     
-    
     # ส่ง Token กลับไปให้ลูกค้า
     # return {
     #     "access_token": access_token, 
@@ -145,7 +147,7 @@ def realtime_api(data: UserAccount, response: Response):
     #     "token_type": "bearer"
     # }
     
-    # cookie
+    # เอา access token ไปเก็บใน cookie
     response.set_cookie(
         key="access_token",
         value=access_token,
@@ -167,7 +169,6 @@ def logout(response: Response):
         samesite="lax"
     )
     return {"message": "Logged out successfully"}
-
 
 @app.get("/getdata")
 def read_me(email: str = Depends(verify_token)):
